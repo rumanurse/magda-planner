@@ -1505,7 +1505,7 @@ function setupDropZone(el) {
       const date = el.dataset.date;
       const newTime = `${String(hour||'09').padStart(2,'0')}:00`;
       addTask({...copiedTask, id:undefined, date, time:newTime});
-      else showToast('📋 Task pasted!');
+      showToast('📋 Task pasted!');
       renderView();
     });
   }
