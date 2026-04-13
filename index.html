@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magda's Command Center v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1B3A5C;
+  --champagne: #F5E6C8;
+  --gold: #C9A84C;
+  --taupe: #8B7355;
+  --cream: #FAF6EF;
+  --dark: #0F2238;
+  --white: #FFFFFF;
+  --shadow: rgba(27,58,92,0.12);
+  --shadow-deep: rgba(27,58,92,0.22);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh;overflow-x:hidden}
+
+/* QUOTE BANNER */
+#quote-banner{background:var(--navy);color:var(--champagne);text-align:center;padding:12px 24px;position:relative;overflow:hidden}
+#quote-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(201,168,76,0.15) 0%,transparent 60%);pointer-events:none}
+#quote-text{font-family:'Cormorant Garant',serif;font-style:italic;font-size:1rem;letter-spacing:0.02em;max-width:700px;margin:0 auto;line-height:1.5}
+#quote-source{font-size:0.7rem;font-weight:500;color:var(--gold);margin-top:3px;letter-spacing:0.08em;text-transform:uppercase}
+
+/* WEATHER BAR */
+#weather-bar{background:linear-gradient(135deg,#1a3352 0%,#243d5c 100%);color:var(--champagne);padding:8px 32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;border-bottom:1px solid rgba(201,168,76,0.2)}
+.weather-item{display:flex;align-items:center;gap:6px;font-size:0.75rem}
+.weather-item span:first-child{font-size:1rem}
+.weather-label{opacity:0.6;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.06em}
+.weather-val{font-weight:600}
+.sun-info{display:flex;gap:16px;margin-left:auto}
+.sabbath-badge{background:rgba(201,168,76,0.2);border:1px solid var(--gold);color:var(--gold);padding:3px 10px;border-radius:50px;font-size:0.68rem;font-weight:600;letter-spacing:0.06em}
+#week-weather{display:flex;gap:8px;padding:10px 32px;background:var(--white);border-bottom:1px solid rgba(139,115,85,0.1);overflow-x:auto}
+.week-weather-day{text-align:center;min-width:60px;padding:6px 8px;border-radius:var(--radius-sm);background:var(--cream)}
+.wwd-name{font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;letter-spacing:0.05em}
+.wwd-icon{font-size:1.2rem;margin:2px 0}
+.wwd-temp{font-size:0.72rem;font-weight:600;color:var(--navy)}
+.wwd-lo{font-size:0.62rem;color:var(--taupe)}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:var(--white);border-bottom:1px solid rgba(139,115,85,0.18);box-shadow:0 2px 12px var(--shadow);flex-wrap:wrap;gap:10px}
+.logo-area h1{font-family:'Cormorant Garant',serif;font-size:1.5rem;font-weight:600;color:var(--navy);letter-spacing:0.03em}
+.logo-area span{font-size:0.7rem;font-weight:400;color:var(--taupe);display:block;letter-spacing:0.12em;text-transform:uppercase;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.view-tabs{display:flex;background:var(--cream);border-radius:50px;padding:3px;border:1px solid rgba(139,115,85,0.2)}
+.view-tab{padding:6px 16px;border-radius:50px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;color:var(--taupe);cursor:pointer;transition:all 0.2s;letter-spacing:0.04em}
+.view-tab.active{background:var(--navy);color:var(--champagne)}
+.btn-primary{background:var(--gold);color:var(--navy);border:none;padding:8px 16px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:5px}
+.btn-primary:hover{background:#b8942f;transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,168,76,0.35)}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy);padding:7px 14px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:0.76rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+.btn-outline:hover{background:var(--navy);color:var(--white)}
+.btn-sm{padding:5px 12px;font-size:0.72rem}
+
+/* DATE NAV */
+.date-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 32px;background:var(--white);border-bottom:1px solid rgba(139,115,85,0.1)}
+.date-nav h2{font-family:'Cormorant Garant',serif;font-size:1.3rem;font-weight:600;color:var(--navy)}
+.nav-arrows{display:flex;gap:6px;align-items:center}
+.nav-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(27,58,92,0.2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--navy);transition:all 0.2s}
+.nav-btn:hover{background:var(--navy);color:var(--white)}
+.today-btn{padding:5px 14px;border-radius:50px;border:1.5px solid rgba(27,58,92,0.2);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:500;color:var(--navy);transition:all 0.2s}
+.today-btn:hover{background:var(--navy);color:var(--white)}
+
+/* MAIN */
+#main-content{padding:20px 32px;min-height:calc(100vh - 220px)}
+
+/* ── DAILY VIEW ── */
+#daily-view{display:grid;grid-template-columns:1fr 300px;gap:20px}
+
+/* TIME BLOCK CONTROLS */
+.timeblock-controls{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 12px var(--shadow);margin-bottom:16px;overflow:hidden}
+.timeblock-header{background:var(--dark);color:var(--champagne);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.timeblock-header span{font-family:'Cormorant Garant',serif;font-size:0.95rem;font-style:italic}
+.tb-grid{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px}
+.tb-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--radius-sm);border:1.5px solid;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.15s;position:relative}
+.tb-chip input[type=time]{border:none;background:transparent;font-size:0.7rem;font-family:'DM Sans',sans-serif;color:inherit;width:52px;cursor:pointer;outline:none}
+.tb-chip.active{opacity:1}
+.tb-chip.inactive{opacity:0.45}
+.tb-toggle{font-size:0.65rem;font-weight:600;padding:3px 8px;border-radius:50px;border:none;cursor:pointer;margin-left:4px}
+
+/* TIMELINE */
+.timeline-wrap{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 16px var(--shadow);overflow:hidden}
+.timeline-header{background:var(--navy);color:var(--champagne);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.timeline-header h3{font-family:'Cormorant Garant',serif;font-size:1rem;font-style:italic}
+.timeline-grid{position:relative;overflow-y:auto;max-height:72vh}
+.time-slot{display:grid;grid-template-columns:60px 1fr;min-height:60px;border-bottom:1px solid rgba(139,115,85,0.07);position:relative}
+.time-label{font-size:0.67rem;font-weight:600;color:var(--taupe);letter-spacing:0.05em;padding:8px 8px;text-align:right;border-right:1px solid rgba(139,115,85,0.1);align-self:start;margin-top:6px;position:sticky}
+.slot-drop{padding:3px 6px;min-height:60px;transition:background 0.15s;position:relative}
+.slot-drop.drag-over{background:rgba(201,168,76,0.12)!important}
+
+/* TIME BLOCK BACKGROUNDS */
+.tb-bg{position:absolute;left:0;right:0;opacity:0.12;pointer-events:none;z-index:0;border-left:3px solid}
+.slot-drop>*{position:relative;z-index:1}
+
+/* TASK BLOCKS */
+.task-block{border-radius:var(--radius-sm);padding:7px 10px;margin:2px 0;cursor:grab;display:flex;align-items:flex-start;gap:7px;font-size:0.78rem;font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:all 0.15s;user-select:none;position:relative}
+.task-block:active{cursor:grabbing;opacity:0.8}
+.task-block:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,0.12)}
+.task-block.gym{background:#E8F4FD;border-left:3px solid #2196F3;color:#1565C0}
+.task-block.chore{background:#FFF8E6;border-left:3px solid var(--gold);color:#7a5c00}
+.task-block.work{background:#EEF2FA;border-left:3px solid var(--navy);color:var(--navy)}
+.task-block.sibling{background:#F3E8FF;border-left:3px solid #9C27B0;color:#6A1B9A}
+.task-block.health{background:#E8F5E9;border-left:3px solid #4CAF50;color:#1B5E20}
+.task-block.self{background:#FFF0F3;border-left:3px solid #E91E63;color:#880E4F}
+.task-block.meal{background:#FFF3E0;border-left:3px solid #FF9800;color:#E65100}
+.task-block.bill{background:#F3F0FF;border-left:3px solid #673AB7;color:#4527A0}
+.task-block.custom{background:#F0F7FF;border-left:3px solid #0288D1;color:#01579B}
+.task-icon{font-size:0.95rem;flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-name{font-weight:600;font-size:0.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-dur{font-size:0.65rem;opacity:0.7;margin-top:1px}
+.task-actions{display:none;gap:3px;position:absolute;right:6px;top:50%;transform:translateY(-50%)}
+.task-block:hover .task-actions{display:flex}
+.task-edit-btn{width:20px;height:20px;border-radius:50%;border:none;background:rgba(0,0,0,0.08);cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.task-edit-btn:hover{background:rgba(0,0,0,0.18)}
+.overlap-badge{position:absolute;top:-4px;right:-4px;background:#FF5722;color:white;border-radius:50%;width:14px;height:14px;font-size:0.55rem;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* SIDEBAR */
+.daily-sidebar{display:flex;flex-direction:column;gap:14px}
+.sidebar-card{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 12px var(--shadow);overflow:hidden}
+.sidebar-card-header{padding:12px 16px;background:var(--navy);color:var(--champagne);font-family:'Cormorant Garant',serif;font-size:0.95rem;font-style:italic;display:flex;align-items:center;justify-content:space-between}
+.sidebar-card-body{padding:12px 16px}
+.palette-grid{display:flex;flex-direction:column;gap:5px}
+.palette-item{border-radius:var(--radius-sm);padding:7px 10px;cursor:grab;font-size:0.75rem;font-weight:500;display:flex;align-items:center;gap:7px;transition:all 0.15s;user-select:none}
+.palette-item:hover{transform:translateX(3px)}
+.palette-item:active{cursor:grabbing}
+.copy-badge{font-size:0.6rem;margin-left:auto;opacity:0.6;font-weight:400}
+
+/* BILLS */
+.bill-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(139,115,85,0.08);font-size:0.76rem}
+.bill-item:last-child{border-bottom:none}
+.bill-due{font-size:0.65rem;color:var(--taupe)}
+.bill-amt{font-weight:600;color:var(--navy)}
+.bill-overdue{color:#E53935}
+.bill-soon{color:#FF9800}
+
+/* NON-NEGS */
+.non-neg-row{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0;font-size:0.76rem;color:var(--navy)}
+.non-neg-row input{accent-color:var(--gold)}
+
+/* ── WEEKLY VIEW ── */
+#weekly-view{display:none}
+.week-grid{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 16px var(--shadow);overflow:hidden}
+.week-header-row{display:grid;grid-template-columns:56px repeat(7,1fr);background:var(--navy)}
+.week-day-header{padding:10px 6px;text-align:center;color:var(--champagne);font-size:0.7rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,0.07)}
+.week-day-header.today{background:rgba(201,168,76,0.22)}
+.week-day-header .day-num{display:block;font-family:'Cormorant Garant',serif;font-size:1.3rem;font-weight:300;margin-top:1px}
+.week-day-header .day-weather{font-size:0.62rem;opacity:0.75;margin-top:2px}
+.week-body{max-height:68vh;overflow-y:auto}
+.week-time-row{display:grid;grid-template-columns:56px repeat(7,1fr);border-bottom:1px solid rgba(139,115,85,0.06);min-height:52px}
+.week-time-cell{padding:3px;border-right:1px solid rgba(139,115,85,0.06);min-height:52px;transition:background 0.15s;position:relative}
+.week-time-cell.drag-over{background:rgba(201,168,76,0.1)!important}
+.week-time-label{font-size:0.62rem;font-weight:600;color:var(--taupe);padding:6px 4px;text-align:right;border-right:1px solid rgba(139,115,85,0.1)}
+.week-task{border-radius:4px;padding:3px 6px;margin:1px 0;font-size:0.65rem;font-weight:500;cursor:grab;display:flex;align-items:center;gap:3px;box-shadow:0 1px 3px rgba(0,0,0,0.09);user-select:none;overflow:hidden;position:relative;z-index:1}
+.week-task span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.week-tb-bg{position:absolute;inset:0;opacity:0.1;pointer-events:none;z-index:0}
+
+/* ── MONTHLY VIEW ── */
+#monthly-view{display:none}
+.month-grid-wrap{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 16px var(--shadow);overflow:hidden}
+.month-day-names{display:grid;grid-template-columns:repeat(7,1fr);background:var(--navy)}
+.month-day-name{padding:10px 6px;text-align:center;color:var(--champagne);font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+.month-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.month-cell{min-height:90px;border-right:1px solid rgba(139,115,85,0.07);border-bottom:1px solid rgba(139,115,85,0.07);padding:5px;position:relative;transition:background 0.15s}
+.month-cell.drag-over{background:rgba(201,168,76,0.08)!important}
+.month-cell.other-month{background:rgba(139,115,85,0.02)}
+.month-cell.sabbath-day{background:rgba(201,168,76,0.06)}
+.month-cell.today .cell-date{background:var(--gold);color:var(--navy);border-radius:50%}
+.cell-date{font-size:0.76rem;font-weight:600;color:var(--navy);margin-bottom:3px;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.month-task-dot{font-size:0.62rem;border-radius:3px;padding:2px 5px;margin:1px 0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.month-more{font-size:0.6rem;color:var(--taupe);margin-top:2px;cursor:pointer}
+.month-bill-dot{font-size:0.6rem;background:#F3F0FF;border-left:2px solid #673AB7;color:#4527A0;padding:2px 5px;border-radius:3px;margin:1px 0;cursor:pointer}
+.month-sabbath-bar{font-size:0.6rem;background:rgba(201,168,76,0.15);border-left:2px solid var(--gold);color:var(--taupe);padding:2px 5px;border-radius:3px;margin:1px 0}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,34,56,0.55);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:18px;padding:24px 28px;width:480px;max-width:95vw;box-shadow:0 20px 60px rgba(15,34,56,0.25);animation:modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);max-height:90vh;overflow-y:auto}
+@keyframes modalIn{from{transform:scale(0.9) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal h3{font-family:'Cormorant Garant',serif;font-size:1.3rem;color:var(--navy);margin-bottom:16px;font-style:italic}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:0.7rem;font-weight:600;color:var(--taupe);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:1.5px solid rgba(139,115,85,0.25);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--navy);background:var(--cream);outline:none;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.type-chips{display:flex;gap:5px;flex-wrap:wrap}
+.type-chip{padding:4px 10px;border-radius:50px;border:1.5px solid rgba(139,115,85,0.2);font-size:0.68rem;font-weight:500;cursor:pointer;transition:all 0.15s;background:transparent}
+.type-chip.selected{border-color:var(--navy);background:var(--navy);color:var(--white)}
+
+/* CONTEXT MENU */
+.ctx-menu{position:fixed;background:var(--white);border-radius:var(--radius-sm);box-shadow:0 8px 30px var(--shadow-deep);padding:6px;z-index:2000;min-width:160px;animation:modalIn 0.15s ease}
+.ctx-item{padding:8px 14px;font-size:0.78rem;cursor:pointer;border-radius:5px;display:flex;align-items:center;gap:8px;transition:background 0.1s}
+.ctx-item:hover{background:var(--cream)}
+.ctx-divider{height:1px;background:rgba(139,115,85,0.1);margin:4px 0}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:var(--champagne);padding:12px 20px;border-radius:var(--radius);font-size:0.8rem;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px var(--shadow-deep);z-index:3000;transform:translateY(80px);opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);max-width:340px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* CURRENT TIME */
+.current-time-line{position:absolute;left:0;right:0;height:2px;background:var(--gold);z-index:10;pointer-events:none}
+.current-time-line::before{content:'';position:absolute;left:57px;top:-4px;width:9px;height:9px;background:var(--gold);border-radius:50%}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:rgba(139,115,85,0.25);border-radius:3px}
+
+@media(max-width:768px){
+  header,#main-content,.date-nav,#weather-bar{padding-left:16px;padding-right:16px}
+  #daily-view{grid-template-columns:1fr}
+  .daily-sidebar{flex-direction:row;flex-wrap:wrap}
+  .sidebar-card{flex:1;min-width:240px}
+}
+
+.sabbath-overlay{position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(201,168,76,0.04) 0px,rgba(201,168,76,0.04) 2px,transparent 2px,transparent 8px);pointer-events:none;z-index:0}
+.paste-cursor{cursor:copy!important}
+
+/* EXPORT PREVIEW */
+.export-section{margin-bottom:10px}
+.export-section-title{font-size:0.65rem;font-weight:700;color:var(--taupe);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid rgba(139,115,85,0.15)}
+.export-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(139,115,85,0.06);font-size:0.78rem}
+.export-item:last-child{border-bottom:none}
+.export-item-time{font-size:0.68rem;font-weight:600;color:var(--taupe);min-width:52px}
+.export-item-name{flex:1;font-weight:500;color:var(--navy)}
+.export-item-dur{font-size:0.65rem;color:var(--taupe)}
+.export-empty{font-size:0.8rem;color:var(--taupe);text-align:center;padding:20px;font-style:italic}
+.export-count{font-size:0.72rem;color:var(--taupe);text-align:right;margin-top:4px}
+
+/* BILLS WARNING BANNER */
+.bill-warning-wrap{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 12px var(--shadow);overflow:hidden}
+.bill-warning-header{background:linear-gradient(135deg,#4527A0 0%,#673AB7 100%);color:white;padding:11px 16px;font-family:'Cormorant Garant',serif;font-size:0.95rem;font-style:italic;display:flex;align-items:center;gap:8px}
+.bill-warning-list{display:flex;flex-direction:column;gap:0}
+.bill-warning-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(139,115,85,0.08);transition:background 0.15s}
+.bill-warning-item:last-child{border-bottom:none}
+.bill-warning-item.paid{opacity:0.45}
+.bill-warning-item.paid .bill-warn-name{text-decoration:line-through}
+.bill-warn-urgency{font-size:1.1rem;flex-shrink:0}
+.bill-warn-info{flex:1;min-width:0}
+.bill-warn-name{font-weight:600;font-size:0.8rem;color:var(--navy)}
+.bill-warn-countdown{font-size:0.68rem;margin-top:2px;font-weight:500}
+.bill-warn-countdown.urgent{color:#E53935}
+.bill-warn-countdown.soon{color:#FF9800}
+.bill-warn-countdown.okay{color:var(--taupe)}
+.bill-warn-amt{font-size:0.82rem;font-weight:700;color:var(--navy);margin-right:10px;white-space:nowrap}
+.bill-warn-cb{width:18px;height:18px;accent-color:#673AB7;cursor:pointer;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div id="quote-banner">
+  <div id="quote-text">Loading your daily word…</div>
+  <div id="quote-source"></div>
+</div>
+
+<div id="weather-bar">
+  <div class="weather-item"><span>🌡️</span><div><div class="weather-label">Now</div><div class="weather-val" id="w-temp">--°F</div></div></div>
+  <div class="weather-item"><span id="w-icon">☁️</span><div><div class="weather-label">Condition</div><div class="weather-val" id="w-cond">Loading…</div></div></div>
+  <div class="weather-item"><span>⬆️</span><div><div class="weather-label">High</div><div class="weather-val" id="w-high">--°F</div></div></div>
+  <div class="weather-item"><span>⬇️</span><div><div class="weather-label">Low</div><div class="weather-val" id="w-low">--°F</div></div></div>
+  <div class="sun-info">
+    <div class="weather-item"><span>🌅</span><div><div class="weather-label">Sunrise</div><div class="weather-val" id="w-sunrise">--:--</div></div></div>
+    <div class="weather-item"><span>🌇</span><div><div class="weather-label">Sunset</div><div class="weather-val" id="w-sunset">--:--</div></div></div>
+    <div id="sabbath-badge-wrap"></div>
+  </div>
+</div>
+
+<div id="week-weather-bar" style="display:none">
+  <div id="week-weather"></div>
+</div>
+
+<header>
+  <div class="logo-area">
+    <h1>✦ Magda's Command Center</h1>
+    <span>RumaNurse · Araya Consulting · 2026 Alignment Era</span>
+  </div>
+  <div class="header-right">
+    <div class="view-tabs">
+      <button class="view-tab active" onclick="switchView('daily')">Day</button>
+      <button class="view-tab" onclick="switchView('weekly')">Week</button>
+      <button class="view-tab" onclick="switchView('monthly')">Month</button>
+    </div>
+    <button class="btn-primary" onclick="openAddModal()">＋ Task</button>
+    <button class="btn-primary" onclick="openBillModal()">💳 Bill</button>
+    <button class="btn-outline" onclick="openExportModal()">📅 Export Agenda</button>
+    <button class="btn-outline btn-sm" id="paste-btn" onclick="activatePasteMode()" style="display:none">📋 Paste</button>
+  </div>
+</header>
+
+<div class="date-nav">
+  <div class="nav-arrows">
+    <button class="nav-btn" onclick="navigate(-1)">←</button>
+    <button class="today-btn" onclick="goToToday()">Today</button>
+    <button class="nav-btn" onclick="navigate(1)">→</button>
+  </div>
+  <h2 id="current-date-label">Loading…</h2>
+  <div style="width:80px"></div>
+</div>
+
+<div id="main-content">
+
+  <!-- DAILY -->
+  <div id="daily-view">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- TIME BLOCK CONTROLS -->
+      <div class="timeblock-controls">
+        <div class="timeblock-header">
+          <span>⏱ Time Block Palette — drag to timeline</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button onclick="openAddTBModal()" style="background:rgba(201,168,76,0.2);border:1px solid var(--gold);color:var(--gold);border-radius:50px;padding:3px 10px;font-size:0.65rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600">＋ New Block</button>
+            <button class="btn-outline btn-sm" onclick="openTBModal()" style="font-size:0.68rem;padding:4px 10px;border-color:rgba(245,230,200,0.4);color:var(--champagne)">⚙️ Configure</button>
+          </div>
+        </div>
+        <div class="tb-grid" id="tb-chips"></div>
+      </div>
+
+      <!-- BILLS WARNING BANNER -->
+      <div id="bills-warning-banner" style="display:none"></div>
+
+      <div class="timeline-wrap">
+        <div class="timeline-header">
+          <h3 id="daily-sun-label">Today's Timeline</h3>
+          <span style="font-size:0.72rem;opacity:0.7" id="daily-progress-text">0 tasks</span>
+        </div>
+        <div class="timeline-grid" id="timeline-grid"></div>
+      </div>
+    </div>
+
+    <div class="daily-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card-header">
+          <span>Task Palette</span>
+          <button onclick="openCustomTaskModal()" style="background:rgba(245,230,200,0.15);border:1px solid rgba(245,230,200,0.3);color:var(--champagne);border-radius:50px;padding:3px 10px;font-size:0.65rem;cursor:pointer;font-family:'DM Sans',sans-serif">＋ Custom</button>
+        </div>
+        <div class="sidebar-card-body"><div class="palette-grid" id="task-palette"></div></div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-header"><span>Daily Non-Negotiables ✦</span></div>
+        <div class="sidebar-card-body"><div id="non-neg-list"></div></div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-header">
+          <span>💳 Bills Due Soon</span>
+          <button onclick="openBillModal()" style="background:rgba(245,230,200,0.15);border:1px solid rgba(245,230,200,0.3);color:var(--champagne);border-radius:50px;padding:3px 10px;font-size:0.65rem;cursor:pointer;font-family:'DM Sans',sans-serif">＋</button>
+        </div>
+        <div class="sidebar-card-body"><div id="bills-list"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY -->
+  <div id="weekly-view">
+    <div class="week-grid">
+      <div class="week-header-row" id="week-header"></div>
+      <div class="week-body" id="week-body"></div>
+    </div>
+  </div>
+
+  <!-- MONTHLY -->
+  <div id="monthly-view">
+    <div class="month-grid-wrap">
+      <div class="month-day-names">
+        <div class="month-day-name">Sun</div><div class="month-day-name">Mon</div><div class="month-day-name">Tue</div>
+        <div class="month-day-name">Wed</div><div class="month-day-name">Thu</div><div class="month-day-name">Fri</div>
+        <div class="month-day-name">Sat 🕊️</div>
+      </div>
+      <div class="month-grid" id="month-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TASK MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">New Task ✦</h3>
+    <div class="form-group"><label>Task Name</label><input type="text" id="task-name-input" placeholder="e.g. Morning workout…"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="task-date-input"/></div>
+      <div class="form-group"><label>Time</label><input type="time" id="task-time-input"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Duration (min)</label><input type="number" id="task-dur-input" value="60" min="15" step="15"/></div>
+      <div class="form-group"><label>Repeat</label>
+        <select id="task-repeat-input">
+          <option value="none">None</option>
+          <option value="daily">Daily</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Type</label>
+      <div class="type-chips">
+        <button class="type-chip selected" data-type="work">💼 Work</button>
+        <button class="type-chip" data-type="gym">🏋🏽‍♀️ Gym</button>
+        <button class="type-chip" data-type="chore">🧹 Chore</button>
+        <button class="type-chip" data-type="sibling">🚗 Sibling</button>
+        <button class="type-chip" data-type="health">💊 Health</button>
+        <button class="type-chip" data-type="self">💆🏽‍♀️ Self-care</button>
+        <button class="type-chip" data-type="meal">🍽️ Meal</button>
+        <button class="type-chip" data-type="custom">⭐ Custom</button>
+      </div>
+    </div>
+    <div class="form-group"><label>Notes</label><textarea id="task-notes-input" rows="2" placeholder="Optional notes…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-overlay')">Cancel</button>
+      <button class="btn-primary" onclick="saveTask()" id="save-task-btn">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- BILL MODAL -->
+<div class="modal-overlay" id="bill-modal-overlay">
+  <div class="modal">
+    <h3>Add Bill 💳</h3>
+    <div class="form-group"><label>Bill Name</label><input type="text" id="bill-name-input" placeholder="e.g. Rent, Phone, Insurance…"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Amount ($)</label><input type="number" id="bill-amt-input" placeholder="0.00" step="0.01"/></div>
+      <div class="form-group"><label>Due Date</label><input type="date" id="bill-date-input"/></div>
+    </div>
+    <div class="form-group"><label>Recurring</label>
+      <select id="bill-repeat-input">
+        <option value="none">One-time</option>
+        <option value="monthly">Monthly</option>
+        <option value="weekly">Weekly</option>
+        <option value="yearly">Yearly</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('bill-modal-overlay')">Cancel</button>
+      <button class="btn-primary" onclick="saveBill()">Add Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIME BLOCK CONFIG MODAL -->
+<div class="modal-overlay" id="tb-modal-overlay">
+  <div class="modal">
+    <h3>Configure Time Blocks ⏱</h3>
+    <div id="tb-config-list"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('tb-modal-overlay')">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM TASK MODAL -->
+<div class="modal-overlay" id="custom-task-modal">
+  <div class="modal">
+    <h3>Create Custom Task ⭐</h3>
+    <div class="form-group"><label>Task Name</label><input type="text" id="ct-name" placeholder="Your custom task name…"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Icon (emoji)</label><input type="text" id="ct-icon" placeholder="⭐" maxlength="2"/></div>
+      <div class="form-group"><label>Default Duration (min)</label><input type="number" id="ct-dur" value="60" min="15" step="15"/></div>
+    </div>
+    <div class="form-group"><label>Type</label>
+      <div class="type-chips" id="ct-type-chips">
+        <button class="type-chip selected" data-type="custom">⭐ Custom</button>
+        <button class="type-chip" data-type="work">💼 Work</button>
+        <button class="type-chip" data-type="gym">🏋🏽‍♀️ Gym</button>
+        <button class="type-chip" data-type="chore">🧹 Chore</button>
+        <button class="type-chip" data-type="health">💊 Health</button>
+        <button class="type-chip" data-type="self">💆🏽‍♀️ Self</button>
+        <button class="type-chip" data-type="meal">🍽️ Meal</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('custom-task-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveCustomTask()">Create Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="ctx-menu" id="ctx-menu" style="display:none">
+  <div class="ctx-item" onclick="ctxEdit()">✏️ Edit</div>
+  <div class="ctx-item" onclick="ctxCopy()">📋 Copy</div>
+  <div class="ctx-divider"></div>
+  <div class="ctx-item" onclick="ctxDelete()" style="color:#E53935">🗑 Delete</div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+<!-- EXPORT AGENDA MODAL -->
+<div class="modal-overlay" id="export-modal-overlay">
+  <div class="modal" style="width:520px">
+    <h3 id="export-modal-title">📅 Export Agenda</h3>
+    <div id="export-preview" style="margin-bottom:16px"></div>
+    <div style="background:var(--cream);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;font-size:0.76rem;color:var(--taupe);line-height:1.6">
+      <strong style="color:var(--navy);display:block;margin-bottom:4px">How to import to Google Calendar:</strong>
+      1. Click <strong>Download .ics</strong> below<br>
+      2. Click <strong>Open Google Calendar</strong> — it'll open to the import page<br>
+      3. Select the downloaded file → click <strong>Import</strong><br>
+      4. Done! All events land in your calendar at once. 🎉
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('export-modal-overlay')">Cancel</button>
+      <button class="btn-outline" onclick="window.open('https://calendar.google.com/calendar/r/settings/export','_blank')" style="border-color:#4285F4;color:#4285F4">🌐 Open Google Calendar</button>
+      <button class="btn-primary" id="download-ics-btn" onclick="downloadICS()">⬇️ Download .ics</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════
+const SUPABASE_URL = 'https://dsmkfrgobfbobceywgal.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzbWtmcmdvYmZib2JjZXl3Z2FsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NzY5NjAsImV4cCI6MjA5MTU1Mjk2MH0.QZRPXZaWBi1S_Iem5XyWLPnpr6trCER6REGc-ufXxYw';
+const USER_ID = 'magda';
+
+const sb = {
+  async get(table) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    try {
+      const res = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?user_id=eq.'+USER_ID, {
+        headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer '+SUPABASE_KEY },
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    } catch(e) { clearTimeout(timer); throw e; }
+  },
+  async upsert(table, data) {
+    const res = await fetch(SUPABASE_URL+'/rest/v1/'+table, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer '+SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+      body: JSON.stringify(Array.isArray(data) ? data : [data])
+    });
+    if (!res.ok) throw new Error(await res.text());
+  },
+  async del(table, id) {
+    const res = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+id+'&user_id=eq.'+USER_ID, {
+      method: 'DELETE',
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer '+SUPABASE_KEY }
+    });
+    if (!res.ok) throw new Error(await res.text());
+  }
+};
+
+// ═══════════════════════════════════════
+//  QUOTES — Bible, Motivational, BTS
+// ═══════════════════════════════════════
+const QUOTES = [
+  {text:"I can do all things through Christ who strengthens me.",source:"Philippians 4:13"},
+  {text:"She is clothed with strength and dignity; she can laugh at the days to come.",source:"Proverbs 31:25"},
+  {text:"For I know the plans I have for you — plans to prosper you and not to harm you.",source:"Jeremiah 29:11"},
+  {text:"Be strong and courageous. Do not be afraid; do not be discouraged.",source:"Joshua 1:9"},
+  {text:"The Lord will fight for you; you need only to be still.",source:"Exodus 14:14"},
+  {text:"Trust in the Lord with all your heart and lean not on your own understanding.",source:"Proverbs 3:5-6"},
+  {text:"Commit your work to the Lord, and your plans will be established.",source:"Proverbs 16:3"},
+  {text:"With God all things are possible.",source:"Matthew 19:26"},
+  {text:"Do not be anxious about anything, but in every situation present your requests to God.",source:"Philippians 4:6"},
+  {text:"And we know that in all things God works for the good of those who love him.",source:"Romans 8:28"},
+  {text:"No weapon formed against you shall prosper.",source:"Isaiah 54:17"},
+  {text:"But those who hope in the Lord will renew their strength. They will soar on wings like eagles.",source:"Isaiah 40:31"},
+  {text:"Delight yourself in the Lord, and he will give you the desires of your heart.",source:"Psalm 37:4"},
+  {text:"God has not given us a spirit of fear, but of power and love and self-discipline.",source:"2 Timothy 1:7"},
+  {text:"Now to him who is able to do immeasurably more than all we ask or imagine.",source:"Ephesians 3:20"},
+  {text:"Be still and know that I am God.",source:"Psalm 46:10"},
+  {text:"I praise you because I am fearfully and wonderfully made.",source:"Psalm 139:14"},
+  {text:"Whatever you do, work at it with all your heart, as working for the Lord.",source:"Colossians 3:23"},
+  {text:"My grace is sufficient for you, for my power is made perfect in weakness.",source:"2 Corinthians 12:9"},
+  {text:"Arise, shine, for your light has come.",source:"Isaiah 60:1"},
+  // BTS Lyrics
+  {text:"Life goes on. Like an arrow in the blue sky.",source:"BTS — Life Goes On"},
+  {text:"You've shown me I have reasons I should love myself.",source:"BTS — Answer: Love Myself"},
+  {text:"Even if you're not perfect, you're a limited edition.",source:"RM — Weverse"},
+  {text:"I'd rather die than live without passion.",source:"BTS — Born Singer"},
+  {text:"The dawn right before the sun rises is the darkest.",source:"BTS — Tomorrow"},
+  {text:"Rain comes after the dry season. My rainbow will come.",source:"BTS — The Truth Untold"},
+  {text:"Even if you can't shine like a star, it's okay.",source:"BTS — Magic Shop"},
+  {text:"On days I hate myself, days I want to disappear, I look for myself… Magic Shop.",source:"BTS — Magic Shop"},
+  {text:"Boy, you can cry. Not every road has to lead somewhere.",source:"BTS — Butterfly"},
+  {text:"The universe has moved just for us.",source:"BTS — Euphoria"},
+  {text:"We have learned to be ourselves.",source:"BTS — Not Today"},
+  {text:"You make me begin.",source:"BTS — Begin"},
+  {text:"Don't be trapped in someone else's dream.",source:"BTS — N.O"},
+  {text:"My heart is beating, I'm alive.",source:"BTS — Alive"},
+  {text:"Find your name, find your voice by speaking yourself.",source:"RM — UN Speech 2018"},
+  // BTS Interviews / Weverse
+  {text:"I want to be the best 'me', not the best 'them'.",source:"RM — Interview"},
+  {text:"If you keep working hard even on the days you don't feel like it, you'll surprise yourself.",source:"Jungkook — Weverse"},
+  {text:"Love yourself. It's not selfish — it's necessary.",source:"Jin — Interview"},
+  {text:"Stop comparing yourself. You are enough exactly as you are.",source:"Jimin — Weverse"},
+  {text:"Effort never betrays you.",source:"Jungkook — Interview"},
+  {text:"Even on your worst days, you are still somebody's reason to smile.",source:"V — Weverse"},
+  {text:"It's okay to feel lost sometimes. That's how you find the right path.",source:"Suga — Interview"},
+  {text:"We don't need to be perfect. We just need to be genuine.",source:"RM — Interview"},
+  {text:"Your presence itself is already enough.",source:"Jimin — Weverse"},
+  {text:"Do the things that make your heart beat faster.",source:"J-Hope — Interview"},
+  {text:"Life is about making your own path, not following someone else's.",source:"Suga — Weverse"},
+  {text:"The most important thing is that you keep going.",source:"V — Interview"},
+  {text:"Rest when you need to. Then rise again.",source:"RM — Weverse"},
+  {text:"보라해. I purple you — I will trust and love you for a long time.",source:"V — Coined phrase"},
+  {text:"On days when you lack confidence, remember how far you've come.",source:"Jin — Weverse"},
+  // Motivational
+  {text:"Start where you are. Use what you have. Do what you can.",source:"Arthur Ashe"},
+  {text:"Done is better than perfect. Progress over paralysis.",source:"—"},
+  {text:"One day or day one. You decide.",source:"—"},
+  {text:"Discipline is choosing between what you want now and what you want most.",source:"—"},
+  {text:"Success is the sum of small efforts repeated day in and day out.",source:"Robert Collier"},
+  {text:"The body achieves what the mind believes.",source:"—"},
+  {text:"Fall seven times, stand up eight.",source:"Japanese Proverb"},
+  {text:"It always seems impossible until it's done.",source:"Nelson Mandela"},
+  {text:"She believed she could, so she did.",source:"—"},
+  {text:"The comeback is always stronger than the setback.",source:"—"},
+  {text:"Your 10,000 steps today are an investment in your future freedom.",source:"—"},
+  {text:"Build the business. Build the body. Build the life.",source:"—"},
+  {text:"RumaNurse is not just a business — it's your calling answered.",source:"—"},
+  {text:"15 years of experience. Zero imposter syndrome allowed.",source:"—"},
+  {text:"This is your suddenly era. Walk in it.",source:"—"},
+  {text:"The alignment you prayed for is already in motion.",source:"—"},
+  {text:"You were not made to play small.",source:"—"},
+  {text:"Blessed is she who has believed that the Lord would fulfill his promises to her.",source:"Luke 1:45"},
+  {text:"Your ADHD is not a flaw. It's a superpower on a different frequency.",source:"—"},
+  {text:"Excellence is not a skill. It is an attitude.",source:"Ralph Marston"},
+  {text:"Consistency is the bridge between goals and accomplishment.",source:"—"},
+  {text:"Protein, prayer, and purpose. That's the formula.",source:"—"},
+  {text:"Your clients haven't found their nurse yet. Go be found.",source:"—"},
+  {text:"Rest if you must, but don't you quit.",source:"Edgar A. Guest"},
+  {text:"Faith is taking the first step even when you don't see the whole staircase.",source:"MLK Jr."},
+  {text:"Your story is not over. The best chapters are still being written.",source:"—"},
+  {text:"You are somebody's miracle. Show up like it.",source:"—"},
+];
+
+// ═══════════════════════════════════════
+//  TIME BLOCK DEFINITIONS
+// ═══════════════════════════════════════
+const TB_DEFAULTS = [
+  {id:'work',label:'Work',icon:'💼',color:'#1B3A5C',active:true,mode:'single',start:'09:00',end:'17:00',start2:'13:00',end2:'17:00',duration:8},
+  {id:'gym',label:'Gym',icon:'🏋🏽‍♀️',color:'#2196F3',active:true,start:'07:00',end:'09:00',duration:2},
+  {id:'mealprep',label:'Meal Prep',icon:'🍳',color:'#FF9800',active:true,start:'18:00',end:'19:00',duration:1},
+  {id:'freetime',label:'Free Time',icon:'✨',color:'#E91E63',active:true,start:'20:00',end:'22:00',duration:2},
+  {id:'church',label:'Church/Sabbath',icon:'🕊️',color:'#C9A84C',active:true,start:'10:00',end:'13:00',duration:3},
+];
+
+// Always ensure all 5 presets exist in timeBlocks (merge missing ones back in)
+function ensurePresets() {
+  TB_DEFAULTS.forEach(def => {
+    if (!timeBlocks.find(t => t.id === def.id)) {
+      timeBlocks.push({...def});
+    }
+  });
+  saveTimeBlocks();
+}
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let currentView = 'daily';
+let currentDate = new Date();
+let tasks = [];
+let bills = [];
+let customPalette = JSON.parse(localStorage.getItem('magda_custom_palette') || '[]');
+let timeBlocks = JSON.parse(localStorage.getItem('magda_timeblocks') || JSON.stringify(TB_DEFAULTS));
+let editingTaskId = null;
+let selectedType = 'work';
+let selectedCTType = 'custom';
+let draggedTask = null;
+let draggedTB = null;
+let copiedTask = null;
+let pasteMode = false;
+let ctxTargetId = null;
+let sunData = {};
+let weatherData = {};
+let weekWeatherData = [];
+let userLat = 34.05;
+let userLon = -118.24;
+
+const HOURS = Array.from({length:19}, (_,i) => i+5); // 5am–11pm
+
+const TASK_TYPES = {
+  gym:{icon:'🏋🏽‍♀️',label:'Gym'},
+  chore:{icon:'🧹',label:'Chore'},
+  work:{icon:'💼',label:'Work'},
+  sibling:{icon:'🚗',label:'Sibling'},
+  health:{icon:'💊',label:'Health'},
+  self:{icon:'💆🏽‍♀️',label:'Self-care'},
+  meal:{icon:'🍽️',label:'Meal'},
+  bill:{icon:'💳',label:'Bill'},
+  custom:{icon:'⭐',label:'Custom'},
+};
+
+const DEFAULT_PALETTE = [
+  {id:'p1',name:'Morning Workout',type:'gym',duration:90,icon:'🏋🏽‍♀️'},
+  {id:'p2',name:'Walk 10K Steps',type:'health',duration:60,icon:'🚶🏽‍♀️'},
+  {id:'p3',name:'High-Protein Meal Prep',type:'meal',duration:45,icon:'🍳'},
+  {id:'p4',name:'RumaNurse Outreach',type:'work',duration:60,icon:'📞'},
+  {id:'p5',name:'Pick Up Sibling',type:'sibling',duration:30,icon:'🚗'},
+  {id:'p6',name:'Drop Off Sibling',type:'sibling',duration:30,icon:'🚗'},
+  {id:'p7',name:'House Cleaning',type:'chore',duration:60,icon:'🧹'},
+  {id:'p8',name:'Laundry',type:'chore',duration:45,icon:'👕'},
+  {id:'p9',name:'Skincare Routine',type:'self',duration:20,icon:'✨'},
+  {id:'p10',name:'Bible / Devotional',type:'self',duration:30,icon:'📖'},
+  {id:'p11',name:'RumaNurse Admin',type:'work',duration:90,icon:'💼'},
+  {id:'p12',name:'Feed Luna 🐾',type:'health',duration:10,icon:'🐾'},
+  {id:'p13',name:'Grocery Run',type:'chore',duration:45,icon:'🛒'},
+  {id:'p14',name:'Rest / Nap',type:'self',duration:30,icon:'😴'},
+  {id:'p15',name:'LinkedIn Content',type:'work',duration:45,icon:'💡'},
+];
+
+const NON_NEGS = [
+  {icon:'🥩',label:'165g Protein',id:'protein'},
+  {icon:'👟',label:'10K Steps',id:'steps'},
+  {icon:'💧',label:'3L Water',id:'water'},
+  {icon:'😴',label:'7hrs Sleep',id:'sleep'},
+  {icon:'🏋🏽‍♀️',label:'Gym Session',id:'gym'},
+  {icon:'🐾',label:'Feed Luna',id:'luna'},
+];
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+async function init() {
+  setDailyQuote();
+  ensurePresets();
+
+  // ── STEP 1: Load localStorage instantly — render right away, no waiting ──
+  tasks = JSON.parse(localStorage.getItem('magda_tasks_v2') || '[]');
+  bills = JSON.parse(localStorage.getItem('magda_bills') || '[]');
+
+  if (tasks.length === 0) {
+    localStorage.removeItem('magda_seeded_v2');
+    seedDefaultTasks();
+  }
+
+  // Render immediately so app is usable
+  renderPalette();
+  renderNonNegs();
+  renderTBChips();
+  renderBillsList();
+  renderBillsWarning();
+  renderView();
+  setInterval(updateCurrentTimeLine, 60000);
+  document.addEventListener('click', hideCtxMenu);
+  document.addEventListener('keydown', handleKeydown);
+
+  // ── STEP 2: Request location (non-blocking) ──
+  requestLocation();
+
+  // ── STEP 3: Sync Supabase in background — never blocks the UI ──
+  syncFromSupabase();
+}
+
+async function syncFromSupabase() {
+  try {
+    const [remoteTasks, remoteBills] = await Promise.all([
+      sb.get('tasks'),
+      sb.get('bills'),
+    ]);
+    if (remoteTasks.length > 0) {
+      tasks = remoteTasks.map(t => ({
+        id: t.id, name: t.name, type: t.type,
+        date: t.date, time: t.time, duration: t.duration,
+        repeat: t.repeat, notes: t.notes, icon: t.icon,
+      }));
+      localStorage.setItem('magda_tasks_v2', JSON.stringify(tasks));
+    }
+    if (remoteBills.length > 0) {
+      bills = remoteBills.map(b => ({
+        id: b.id, name: b.name, amount: b.amount,
+        date: b.date, repeat: b.repeat,
+      }));
+      localStorage.setItem('magda_bills', JSON.stringify(bills));
+    }
+    renderView();
+    renderBillsList();
+    renderBillsWarning();
+    showToast('✅ Synced from cloud!');
+  } catch(e) {
+    console.warn('Supabase sync failed:', e.message);
+    // Already rendered from localStorage — no action needed
+  }
+}
+
+function setDailyQuote() {
+  const day = Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000);
+  const q = QUOTES[day % QUOTES.length];
+  document.getElementById('quote-text').textContent = `"${q.text}"`;
+  document.getElementById('quote-source').textContent = `— ${q.source}`;
+}
+
+// ═══════════════════════════════════════
+//  LOCATION + WEATHER + SUN
+// ═══════════════════════════════════════
+function requestLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      userLat = pos.coords.latitude;
+      userLon = pos.coords.longitude;
+      fetchWeather();
+      fetchSunData(new Date());
+      fetchWeekWeather();
+    }, () => {
+      fetchWeather();
+      fetchSunData(new Date());
+      fetchWeekWeather();
+    });
+  } else {
+    fetchWeather();
+    fetchSunData(new Date());
+    fetchWeekWeather();
+  }
+}
+
+async function fetchWeather() {
+  try {
+    // Open-Meteo: weather + sunrise/sunset for 7 days — all CORS-safe, no API key
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${userLat}&longitude=${userLon}` +
+      `&current=temperature_2m,weathercode,apparent_temperature` +
+      `&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset` +
+      `&temperature_unit=fahrenheit&timezone=auto&forecast_days=7`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Weather API error');
+    const data = await res.json();
+    const cur = data.current;
+    const daily = data.daily;
+
+    // Current weather
+    document.getElementById('w-temp').textContent = `${Math.round(cur.temperature_2m)}°F`;
+    document.getElementById('w-high').textContent = `${Math.round(daily.temperature_2m_max[0])}°F`;
+    document.getElementById('w-low').textContent = `${Math.round(daily.temperature_2m_min[0])}°F`;
+    const {icon, label} = wmoToIcon(cur.weathercode);
+    document.getElementById('w-icon').textContent = icon;
+    document.getElementById('w-cond').textContent = label;
+
+    // Week forecast data
+    weekWeatherData = daily.time.map((date, i) => ({
+      date,
+      high: Math.round(daily.temperature_2m_max[i]),
+      low: Math.round(daily.temperature_2m_min[i]),
+      code: daily.weathercode[i],
+      sunrise: daily.sunrise[i],
+      sunset: daily.sunset[i],
+    }));
+
+    // Populate sunData from the forecast (covers today + 6 days)
+    // Open-Meteo returns local time strings like "2026-04-20T06:22" — parse without UTC shift
+    daily.time.forEach((dateStr, i) => {
+      const riseStr = daily.sunrise[i]; // e.g. "2026-04-20T06:22"
+      const setStr  = daily.sunset[i];  // e.g. "2026-04-20T19:17"
+      // Parse as local time by splitting manually
+      const parseLocal = s => {
+        const [datePart, timePart] = s.split('T');
+        const [yr, mo, dy] = datePart.split('-').map(Number);
+        const [hr, mn] = timePart.split(':').map(Number);
+        return new Date(yr, mo-1, dy, hr, mn, 0);
+      };
+      sunData[dateStr] = {sunrise: parseLocal(riseStr), sunset: parseLocal(setStr)};
+    });
+
+    // Update today's sun display
+    updateSunDisplay(currentDate);
+
+    if (currentView === 'weekly') renderView();
+  } catch(e) {
+    console.warn('Weather fetch failed:', e.message);
+    document.getElementById('w-cond').textContent = 'Unavailable';
+  }
+}
+
+async function fetchWeekWeather() {} // handled inside fetchWeather now
+
+// Sun data now comes from Open-Meteo via fetchWeather (CORS-safe).
+// This function is a fallback for dates not covered by the 7-day forecast.
+async function fetchSunData(date) {
+  const dateStr = toDateKey(date);
+  if (sunData[dateStr]) { updateSunDisplay(date); renderTBChips(); return; }
+  // Fetch from Open-Meteo for accurate local times
+  await fetchSunForDate(date);
+  renderTBChips();
+}
+
+function updateSunDisplay(date) {
+  const dateStr = toDateKey(date);
+  const sd = sunData[dateStr];
+  if (!sd) return;
+  document.getElementById('w-sunrise').textContent = fmtTime(sd.sunrise);
+  document.getElementById('w-sunset').textContent = fmtTime(sd.sunset);
+  document.getElementById('daily-sun-label').textContent = `🌅 ${fmtTime(sd.sunrise)} · 🌇 ${fmtTime(sd.sunset)}`;
+  updateSabbathBadge(date, sd.sunset);
+}
+
+// Fetch sun + weather for any date window from Open-Meteo (CORS-safe)
+async function fetchSunForDate(date) {
+  try {
+    const dateStr = toDateKey(date);
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + userLat +
+      '&longitude=' + userLon +
+      '&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,weathercode' +
+      '&temperature_unit=fahrenheit&timezone=auto&forecast_days=14' +
+      '&start_date=' + dateStr +
+      '&end_date=' + dateStr;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('fetch failed');
+    const data = await res.json();
+    data.daily.time.forEach((d, i) => {
+      const parseLocal = s => {
+        if (!s) return new Date();
+        const [dp, tp] = s.split('T');
+        const [yr, mo, dy] = dp.split('-').map(Number);
+        const [hr, mn] = (tp||'12:00').split(':').map(Number);
+        return new Date(yr, mo-1, dy, hr, mn, 0);
+      };
+      sunData[d] = {
+        sunrise: parseLocal(data.daily.sunrise[i]),
+        sunset:  parseLocal(data.daily.sunset[i])
+      };
+    });
+    updateSunDisplay(date);
+  } catch(e) {
+    console.warn('fetchSunForDate failed:', e.message);
+    // Last resort: use a simple fixed offset estimate for LA
+    // LA sunrise ~6:15AM PDT, sunset ~7:30PM PDT — adjust by ±30s per day from equinox
+    const doy = Math.floor((date - new Date(date.getFullYear(),0,1))/86400000);
+    const riseH = 6.0 + 0.5 * Math.cos((doy - 172) * 2 * Math.PI / 365);
+    const setH  = 19.5 + 0.5 * Math.sin((doy - 80) * 2 * Math.PI / 365);
+    const toLocal = h => {
+      const d = new Date(date); d.setHours(0,0,0,0);
+      return new Date(d.getTime() + h * 3600000);
+    };
+    sunData[toDateKey(date)] = {sunrise: toLocal(riseH), sunset: toLocal(setH)};
+    updateSunDisplay(date);
+  }
+}
+
+async function fetchSunForWeek(startDate) {
+  for (let i = 0; i < 8; i++) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + i);
+    await fetchSunData(d);
+  }
+}
+
+function updateSabbathBadge(date, sunset) {
+  const wrap = document.getElementById('sabbath-badge-wrap');
+  wrap.innerHTML = '';
+  const day = date.getDay();
+  if (day === 5) {
+    const badge = document.createElement('div');
+    badge.className = 'sabbath-badge';
+    badge.textContent = `🕊️ Shabbat begins ${fmtTime(sunset)}`;
+    wrap.appendChild(badge);
+  } else if (day === 6) {
+    const badge = document.createElement('div');
+    badge.className = 'sabbath-badge';
+    badge.textContent = `🕊️ Shabbat ends at sunset`;
+    wrap.appendChild(badge);
+  }
+}
+
+function wmoToIcon(code) {
+  if (code === 0) return {icon:'☀️', label:'Clear'};
+  if (code <= 2) return {icon:'⛅', label:'Partly Cloudy'};
+  if (code === 3) return {icon:'☁️', label:'Overcast'};
+  if (code <= 49) return {icon:'🌫️', label:'Foggy'};
+  if (code <= 59) return {icon:'🌦️', label:'Drizzle'};
+  if (code <= 69) return {icon:'🌧️', label:'Rain'};
+  if (code <= 79) return {icon:'🌨️', label:'Snow'};
+  if (code <= 84) return {icon:'🌦️', label:'Showers'};
+  if (code <= 99) return {icon:'⛈️', label:'Thunderstorm'};
+  return {icon:'🌡️', label:'Unknown'};
+}
+
+function fmtTime(date) {
+  return date.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true});
+}
+
+// ═══════════════════════════════════════
+//  SABBATH CALCULATION
+// ═══════════════════════════════════════
+function isSabbathHour(date, hour) {
+  const day = date.getDay();
+  const dateKey = toDateKey(date);
+  const prevFri = new Date(date);
+  if (day === 6) { prevFri.setDate(date.getDate() - 1); }
+  else if (day === 0) { prevFri.setDate(date.getDate() - 2); }
+  const friKey = toDateKey(prevFri);
+  const satKey = day === 6 ? dateKey : (day === 0 ? toDateKey(new Date(date.getFullYear(), date.getMonth(), date.getDate()-1)) : null);
+
+  if (day === 5) {
+    const sunsetData = sunData[dateKey];
+    if (sunsetData) {
+      const sunsetHour = sunsetData.sunset.getHours();
+      return hour >= sunsetHour;
+    }
+    return hour >= 19;
+  }
+  if (day === 6) {
+    const sunsetData = sunData[dateKey];
+    if (sunsetData) {
+      const sunsetHour = sunsetData.sunset.getHours();
+      return hour < sunsetHour;
+    }
+    return hour < 19;
+  }
+  return false;
+}
+
+// ═══════════════════════════════════════
+//  VIEW SWITCHING
+// ═══════════════════════════════════════
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-tab').forEach(t => {
+    const map = {daily:'day',weekly:'week',monthly:'month'};
+    t.classList.toggle('active', t.textContent.toLowerCase().trim() === map[view]);
+  });
+  document.getElementById('daily-view').style.display = view === 'daily' ? 'grid' : 'none';
+  document.getElementById('weekly-view').style.display = view === 'weekly' ? 'block' : 'none';
+  document.getElementById('monthly-view').style.display = view === 'monthly' ? 'block' : 'none';
+  const wwb = document.getElementById('week-weather-bar');
+  wwb.style.display = view === 'weekly' ? 'block' : 'none';
+  renderView();
+}
+
+function navigate(dir) {
+  if (currentView === 'daily') currentDate.setDate(currentDate.getDate() + dir);
+  else if (currentView === 'weekly') currentDate.setDate(currentDate.getDate() + dir * 7);
+  else currentDate.setMonth(currentDate.getMonth() + dir);
+  renderView();
+  if (currentView === 'daily') {
+    // Update sun display immediately from cached data if available
+    updateSunDisplay(currentDate);
+    // Then fetch if needed (for dates outside the 7-day forecast)
+    fetchSunData(currentDate);
+  }
+}
+
+function goToToday() { currentDate = new Date(); renderView(); fetchSunData(currentDate); }
+
+function renderView() {
+  updateDateLabel();
+  renderTBChips();
+  if (currentView === 'daily') {
+    renderBillsWarning();
+    renderDaily();
+  } else if (currentView === 'weekly') renderWeekly();
+  else renderMonthly();
+}
+
+function updateDateLabel() {
+  const opts = currentView === 'daily'
+    ? {weekday:'long', year:'numeric', month:'long', day:'numeric'}
+    : {month:'long', year:'numeric'};
+  document.getElementById('current-date-label').textContent = currentDate.toLocaleDateString('en-US', opts);
+}
+
+// ═══════════════════════════════════════
+//  TIME BLOCKS
+// ═══════════════════════════════════════
+function renderTBChips() {
+  const wrap = document.getElementById('tb-chips');
+  wrap.innerHTML = '';
+  timeBlocks.forEach(tb => {
+    const chip = document.createElement('div');
+    chip.className = 'tb-chip ' + (getTodayTBState(tb.id) ? 'active' : 'inactive');
+    chip.style.cssText = 'border-color:'+tb.color+';color:'+tb.color+';background:'+tb.color+'18;cursor:grab';
+    chip.draggable = true;
+    // Label row
+    const iconSpan = document.createElement('span'); iconSpan.textContent = tb.icon;
+    const nameSpan = document.createElement('span'); nameSpan.textContent = tb.label;
+    const timeSpan = document.createElement('span');
+    timeSpan.style.cssText = 'font-size:0.62rem;opacity:0.75';
+    timeSpan.textContent = tb.start + '–' + tb.end + (tb.duration ? ' ('+tb.duration+'h)' : '');
+    const editBtn = document.createElement('button');
+    editBtn.className = 'tb-toggle';
+    editBtn.style.cssText = 'background:'+tb.color+'22;color:'+tb.color+';margin-left:4px';
+    editBtn.textContent = '✏️';
+    editBtn.onclick = (e) => { e.stopPropagation(); openEditTBModal(tb.id); };
+    // ON/OFF toggle pill
+    const togglePill = document.createElement('button');
+    const isOn = getTodayTBState(tb.id);
+    togglePill.style.cssText = 'margin-left:auto;padding:2px 10px;border-radius:50px;border:none;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;letter-spacing:0.05em;transition:all 0.15s;background:'+(isOn?tb.color:'rgba(139,115,85,0.15)')+';color:'+(isOn?'white':'var(--taupe)');
+    togglePill.textContent = isOn ? 'ON' : 'OFF';
+    togglePill.onclick = (e) => { e.stopPropagation(); toggleTodayTB(tb.id); };
+    chip.appendChild(iconSpan);
+    chip.appendChild(nameSpan);
+    chip.appendChild(timeSpan);
+    chip.appendChild(togglePill);
+    chip.appendChild(editBtn);
+    // Drag to timeline
+    chip.addEventListener('dragstart', (e) => {
+      draggedTask = null;
+      draggedTB = tb;
+      e.dataTransfer.setData('tb-id', tb.id);
+      e.dataTransfer.effectAllowed = 'copy';
+      setTimeout(() => chip.style.opacity = '0.5', 0);
+    });
+    chip.addEventListener('dragend', () => { chip.style.opacity = '1'; draggedTB = null; });
+    wrap.appendChild(chip);
+  });
+}
+
+
+
+function saveTimeBlocks() { localStorage.setItem('magda_timeblocks', JSON.stringify(timeBlocks)); }
+
+// Per-day ON/OFF state — OFF by default every day, resets completely each new day
+function getTodayTBState(id) {
+  const todayKey = toDateKey(new Date());
+  const viewKey = toDateKey(currentDate);
+  // Only show state for today — past/future days always OFF
+  if (viewKey !== todayKey) return false;
+  const key = 'magda_tb_state_' + todayKey;
+  const state = JSON.parse(localStorage.getItem(key) || '{}');
+  // Default is OFF — only ON if explicitly toggled ON today
+  return state[id] === true;
+}
+
+function toggleTodayTB(id) {
+  const todayKey = toDateKey(new Date());
+  const key = 'magda_tb_state_' + todayKey;
+  const state = JSON.parse(localStorage.getItem(key) || '{}');
+  // Toggle: OFF->ON->OFF. Default is OFF so first click = ON
+  state[id] = state[id] === true ? false : true;
+  localStorage.setItem(key, JSON.stringify(state));
+  // Clean up yesterday's state to avoid localStorage bloat
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  localStorage.removeItem('magda_tb_state_' + toDateKey(yesterday));
+  renderTBChips();
+  renderView();
+}
+
+function deleteTB(id) {
+  if (!confirm('Delete this time block?')) return;
+  timeBlocks = timeBlocks.filter(t => t.id !== id);
+  saveTimeBlocks();
+  renderTBChips();
+  renderView();
+  closeModal('tb-modal-overlay');
+  showToast('Time block deleted.');
+}
+
+function openAddTBModal(prefillId) {
+  // Build a simple inline modal for creating/editing a single time block
+  const existing = prefillId ? timeBlocks.find(t => t.id === prefillId) : null;
+  const title = existing ? 'Edit Time Block' : 'New Time Block';
+  // Use a prompt-style approach via the existing tb-modal-overlay but with add form
+  const list = document.getElementById('tb-config-list');
+  list.innerHTML = '';
+  const colors = ['#1B3A5C','#2196F3','#FF9800','#E91E63','#C9A84C','#4CAF50','#9C27B0','#E53935','#00BCD4','#FF5722'];
+  let chosenColor = existing ? existing.color : colors[0];
+  const form = document.createElement('div');
+  form.innerHTML = '<div style="font-size:1.1rem;font-family:Cormorant Garant,serif;font-style:italic;color:var(--navy);margin-bottom:14px">'+title+'</div>';
+  const fields = [
+    {label:'Name', id:'ntb-name', type:'text', val: existing ? existing.label : '', placeholder:'e.g. Deep Work'},
+    {label:'Icon (emoji)', id:'ntb-icon', type:'text', val: existing ? existing.icon : '⏱', placeholder:'⏱'},
+    {label:'Start Time', id:'ntb-start', type:'time', val: existing ? existing.start : '09:00'},
+    {label:'End Time', id:'ntb-end', type:'time', val: existing ? existing.end : '10:00'},
+  ];
+  fields.forEach(f => {
+    const g = document.createElement('div');
+    g.style.cssText = 'margin-bottom:10px';
+    g.innerHTML = '<div style="font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px">'+f.label+'</div>';
+    const inp = document.createElement('input');
+    inp.type = f.type; inp.id = f.id; inp.value = f.val;
+    if (f.placeholder) inp.placeholder = f.placeholder;
+    inp.style.cssText = 'width:100%;padding:8px 12px;border:1.5px solid rgba(139,115,85,0.25);border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.82rem;color:var(--navy);background:var(--cream);outline:none';
+    g.appendChild(inp); form.appendChild(g);
+  });
+  // Color picker
+  const cg = document.createElement('div');
+  cg.style.cssText = 'margin-bottom:14px';
+  cg.innerHTML = '<div style="font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px">Color</div>';
+  const cpRow = document.createElement('div');
+  cpRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap';
+  colors.forEach(c => {
+    const dot = document.createElement('button');
+    dot.style.cssText = 'width:24px;height:24px;border-radius:50%;background:'+c+';border:'+(chosenColor===c?'3px solid var(--navy)':'2px solid transparent')+';cursor:pointer;transition:border 0.15s';
+    dot.onclick = () => { chosenColor = c; dot.parentNode.querySelectorAll('button').forEach(b => b.style.border='2px solid transparent'); dot.style.border='3px solid var(--navy)'; };
+    cpRow.appendChild(dot);
+  });
+  cg.appendChild(cpRow); form.appendChild(cg);
+  // Buttons
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;margin-top:4px';
+  if (existing) {
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '🗑 Delete'; delBtn.style.cssText = 'padding:7px 14px;border-radius:50px;border:1.5px solid #E53935;color:#E53935;background:transparent;font-size:0.76rem;cursor:pointer;font-family:DM Sans,sans-serif;margin-right:auto';
+    delBtn.onclick = () => { timeBlocks = timeBlocks.filter(t => t.id !== prefillId); saveTimeBlocks(); renderTBChips(); renderView(); closeModal('tb-modal-overlay'); showToast('Time block deleted.'); };
+    btnRow.appendChild(delBtn);
+  }
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'Cancel'; cancelBtn.className = 'btn-outline'; cancelBtn.style.cssText += 'padding:7px 14px;border-radius:50px;border:1.5px solid var(--navy);color:var(--navy);background:transparent;font-size:0.76rem;cursor:pointer;font-family:DM Sans,sans-serif';
+  cancelBtn.onclick = () => closeModal('tb-modal-overlay');
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = existing ? 'Update' : 'Create Block'; saveBtn.className = 'btn-primary'; saveBtn.style.cssText = 'padding:7px 16px;border-radius:50px;background:var(--gold);color:var(--navy);border:none;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif';
+  saveBtn.onclick = () => {
+    const name = document.getElementById('ntb-name').value.trim();
+    const icon = document.getElementById('ntb-icon').value.trim() || '⏱';
+    const start = document.getElementById('ntb-start').value;
+    const end = document.getElementById('ntb-end').value;
+    if (!name) { showToast('❌ Name required!', '#E53935'); return; }
+    if (existing) {
+      const tb = timeBlocks.find(t => t.id === prefillId);
+      if (tb) { tb.label = name; tb.icon = icon; tb.start = start; tb.end = end; tb.color = chosenColor; }
+    } else {
+      timeBlocks.push({id:'tb_'+Date.now(), label:name, icon, color:chosenColor, active:true, start, end, mode:'single'});
+    }
+    saveTimeBlocks(); renderTBChips(); renderView(); closeModal('tb-modal-overlay');
+    showToast((existing?'✦ Block updated!':'✦ Time block created!'));
+  };
+  btnRow.appendChild(cancelBtn); btnRow.appendChild(saveBtn);
+  form.appendChild(btnRow);
+  list.appendChild(form);
+  document.getElementById('tb-modal-overlay').classList.add('open');
+}
+
+function openEditTBModal(id) { openAddTBModal(id); }
+
+function openTBModal() {
+  const list = document.getElementById('tb-config-list');
+  list.innerHTML = '';
+  timeBlocks.forEach(tb => {
+    const div = document.createElement('div');
+    div.style.cssText = 'margin-bottom:16px;padding:12px;border-radius:8px;border:1px solid rgba(139,115,85,0.15);background:var(--cream)';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span>${tb.icon}</span>
+        <strong style="font-size:0.85rem">${tb.label}</strong>
+        <button onclick="deleteTB('${tb.id}')" style="margin-left:auto;padding:3px 10px;border-radius:50px;border:1.5px solid #E53935;color:#E53935;background:transparent;font-size:0.68rem;cursor:pointer;font-family:'DM Sans',sans-serif">🗑 Delete</button>
+      </div>
+      ${tb.id === 'work' ? `
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button onclick="setWorkMode('${tb.id}','single')" style="padding:4px 10px;border-radius:50px;border:1.5px solid;font-size:0.7rem;cursor:pointer;background:${tb.mode==='single'?'var(--navy)':'transparent'};color:${tb.mode==='single'?'white':'var(--navy)'}">8hr Block</button>
+          <button onclick="setWorkMode('${tb.id}','split')" style="padding:4px 10px;border-radius:50px;border:1.5px solid;font-size:0.7rem;cursor:pointer;background:${tb.mode==='split'?'var(--navy)':'transparent'};color:${tb.mode==='split'?'white':'var(--navy)'}">2×4hr Split</button>
+        </div>
+      ` : ''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;margin-bottom:3px">Start</div>
+          <input type="time" value="${tb.start}" onchange="updateTBTime('${tb.id}','start',this.value)" style="width:100%;padding:6px;border:1.5px solid rgba(139,115,85,0.25);border-radius:6px;font-family:inherit;font-size:0.8rem;background:white;outline:none"></div>
+        <div><div style="font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;margin-bottom:3px">End</div>
+          <input type="time" value="${tb.end}" onchange="updateTBTime('${tb.id}','end',this.value)" style="width:100%;padding:6px;border:1.5px solid rgba(139,115,85,0.25);border-radius:6px;font-family:inherit;font-size:0.8rem;background:white;outline:none"></div>
+      </div>
+      ${tb.id === 'work' && tb.mode === 'split' ? `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <div><div style="font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;margin-bottom:3px">Block 2 Start</div>
+            <input type="time" value="${tb.start2||'13:00'}" onchange="updateTBTime('${tb.id}','start2',this.value)" style="width:100%;padding:6px;border:1.5px solid rgba(139,115,85,0.25);border-radius:6px;font-family:inherit;font-size:0.8rem;background:white;outline:none"></div>
+          <div><div style="font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;margin-bottom:3px">Block 2 End</div>
+            <input type="time" value="${tb.end2||'17:00'}" onchange="updateTBTime('${tb.id}','end2',this.value)" style="width:100%;padding:6px;border:1.5px solid rgba(139,115,85,0.25);border-radius:6px;font-family:inherit;font-size:0.8rem;background:white;outline:none"></div>
+        </div>
+      ` : ''}
+    `;
+    // Add per-day toggles safely without nested template literal issues
+    const daysWrap = document.createElement('div');
+    daysWrap.style.cssText = 'margin-top:10px';
+    const daysLabel = document.createElement('div');
+    daysLabel.style.cssText = 'font-size:0.65rem;font-weight:600;color:var(--taupe);text-transform:uppercase;margin-bottom:6px';
+    daysLabel.textContent = 'Active days';
+    const daysBtns = document.createElement('div');
+    daysBtns.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap';
+    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach((day, i) => {
+      const on = !tb.days || tb.days[i] !== false;
+      const btn = document.createElement('button');
+      btn.textContent = day;
+      btn.style.cssText = 'padding:3px 8px;border-radius:50px;border:1.5px solid;font-size:0.68rem;cursor:pointer;' +
+        'background:' + (on ? 'var(--navy)' : 'transparent') + ';' +
+        'color:' + (on ? 'white' : 'var(--navy)') + ';' +
+        (i === 5 || i === 6 ? 'border-color:var(--gold)' : '');
+      btn.onclick = () => toggleTBDay(tb.id, i);
+      daysBtns.appendChild(btn);
+    });
+    daysWrap.appendChild(daysLabel);
+    daysWrap.appendChild(daysBtns);
+    div.appendChild(daysWrap);
+    list.appendChild(div);
+  });
+  document.getElementById('tb-modal-overlay').classList.add('open');
+}
+
+
+
+function setWorkMode(id, mode) {
+  const tb = timeBlocks.find(t => t.id === id);
+  if (tb) { tb.mode = mode; saveTimeBlocks(); openTBModal(); renderView(); }
+}
+
+function updateTBTime(id, field, val) {
+  const tb = timeBlocks.find(t => t.id === id);
+  if (tb) { tb[field] = val; saveTimeBlocks(); renderTBChips(); renderView(); }
+}
+
+function toggleTBDay(id, dayIdx) {
+  const tb = timeBlocks.find(t => t.id === id);
+  if (!tb) return;
+  if (!tb.days) tb.days = [true,true,true,true,true,true,true];
+  tb.days[dayIdx] = tb.days[dayIdx] === false ? true : false;
+  saveTimeBlocks();
+  openTBModal(); // re-render modal to show updated state
+  renderView();
+}
+
+function getTBForHour(hour, date) {
+  const dateKey = date ? toDateKey(date) : null;
+  const todayKey = toDateKey(new Date());
+  const stateKey = dateKey ? 'magda_tb_state_' + dateKey : null;
+  const dayState = stateKey ? JSON.parse(localStorage.getItem(stateKey) || '{}') : {};
+  const isToday = dateKey === todayKey;
+  const active = timeBlocks.filter(tb => {
+    // Default is OFF every day — only show if explicitly toggled ON for that date
+    if (!dayState[tb.id]) return false;
+    // Day-of-week filter
+    if (tb.days && date) {
+      const dayIdx = date.getDay();
+      if (tb.days[dayIdx] === false) return false;
+    }
+    return true;
+  });
+  return active.filter(tb => {
+    const dayOverride = dateKey && tb.daySchedules && tb.daySchedules[dateKey];
+    const start  = dayOverride ? dayOverride.start  : tb.start;
+    const end    = dayOverride ? dayOverride.end    : tb.end;
+    const start2 = dayOverride ? dayOverride.start2 : (tb.start2 || '13:00');
+    const end2   = dayOverride ? dayOverride.end2   : (tb.end2   || '17:00');
+    const s  = parseInt(start.split(':')[0]);
+    const e  = parseInt(end.split(':')[0]);
+    if (tb.id === 'work' && tb.mode === 'split') {
+      const s2 = parseInt(start2.split(':')[0]);
+      const e2 = parseInt(end2.split(':')[0]);
+      return (hour >= s && hour < e) || (hour >= s2 && hour < e2);
+    }
+    return hour >= s && hour < e;
+  });
+}
+
+// ═══════════════════════════════════════
+//  DAILY RENDER
+// ═══════════════════════════════════════
+function renderDaily() {
+  const grid = document.getElementById('timeline-grid');
+  grid.innerHTML = '';
+  const dateKey = toDateKey(currentDate);
+
+  HOURS.forEach(h => {
+    const slot = document.createElement('div');
+    slot.className = 'time-slot';
+    slot.dataset.hour = h;
+
+    // Check sabbath
+    const isSab = isSabbathHour(currentDate, h);
+
+    const label = document.createElement('div');
+    label.className = 'time-label';
+    label.textContent = formatHour(h);
+    if (isSab) label.style.color = 'var(--gold)';
+    slot.appendChild(label);
+
+    const drop = document.createElement('div');
+    drop.className = 'slot-drop';
+    drop.dataset.hour = h;
+    drop.dataset.date = dateKey;
+
+    if (isSab) {
+      const ov = document.createElement('div');
+      ov.className = 'sabbath-overlay';
+      drop.appendChild(ov);
+    }
+
+    // Time block backgrounds
+    const tbs = getTBForHour(h, currentDate);
+    tbs.forEach(tb => {
+      const bg = document.createElement('div');
+      bg.style.cssText = `position:absolute;inset:0;background:${tb.color};opacity:0.07;pointer-events:none;z-index:0;border-left:3px solid ${tb.color}`;
+      drop.appendChild(bg);
+      const lbl = document.createElement('div');
+      lbl.style.cssText = `position:absolute;right:6px;top:4px;font-size:0.6rem;color:${tb.color};opacity:0.6;pointer-events:none;z-index:1;font-weight:600`;
+      lbl.textContent = `${tb.icon} ${tb.label}`;
+      drop.appendChild(lbl);
+    });
+
+    const slotTasks = tasks.filter(t => {
+      if (!t.date || !t.time) return false;
+      return t.date === dateKey && parseInt(t.time.split(':')[0]) === h;
+    });
+
+    slotTasks.forEach(t => {
+      const tb = createTaskBlock(t);
+
+      drop.appendChild(tb);
+    });
+
+    setupDropZone(drop);
+    slot.appendChild(drop);
+    grid.appendChild(slot);
+  });
+
+  updateCurrentTimeLine();
+  document.getElementById('daily-progress-text').textContent = `${tasks.filter(t=>t.date===dateKey).length} tasks`;
+}
+
+function createTaskBlock(task) {
+  const div = document.createElement('div');
+  div.className = `task-block ${task.type || 'custom'}`;
+  div.draggable = true;
+  div.dataset.id = task.id;
+
+  const typeInfo = TASK_TYPES[task.type] || {icon:'⭐'};
+  div.innerHTML = `
+    <span class="task-icon">${task.icon || typeInfo.icon}</span>
+    <div class="task-info">
+      <div class="task-name">${task.name}</div>
+      <div class="task-dur">${task.time || ''}${task.duration ? ` · ${task.duration}min` : ''}</div>
+    </div>
+    <div class="task-actions">
+      <button class="task-edit-btn" title="Edit">✏️</button>
+      <button class="task-edit-btn" title="Copy">📋</button>
+      <button class="task-edit-btn" title="Delete" style="color:#E53935">🗑</button>
+    </div>
+  `;
+
+  const actions = div.querySelector('.task-actions');
+  actions.children[0].onclick = e => { e.stopPropagation(); openEditModal(task.id); };
+  actions.children[1].onclick = e => { e.stopPropagation(); copyTask(task.id); };
+  actions.children[2].onclick = e => { e.stopPropagation(); deleteTask(task.id); };
+
+  div.addEventListener('dragstart', e => {
+    draggedTask = task;
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => div.style.opacity = '0.4', 0);
+  });
+  div.addEventListener('dragend', () => { div.style.opacity = '1'; draggedTask = null; });
+
+  div.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    showCtxMenu(e.clientX, e.clientY, task.id);
+  });
+
+  return div;
+}
+
+function setupDropZone(el) {
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop', e => {
+    e.preventDefault();
+    el.classList.remove('drag-over');
+    const hour = el.dataset.hour;
+    const date = el.dataset.date;
+    if (!hour) return;
+
+    // ── Drop a TIME BLOCK onto the timeline ──
+    const tbId = e.dataTransfer.getData('tb-id');
+    if (tbId) {
+      const tb = timeBlocks.find(t => t.id === tbId);
+      if (tb) {
+        // Place TB start at dropped hour, keep its duration
+        const durationHrs = tb.duration || parseInt(tb.end.split(':')[0]) - parseInt(tb.start.split(':')[0]) || 1;
+        const newStart = String(hour).padStart(2,'0') + ':00';
+        const newEnd = String(Math.min(23, parseInt(hour) + durationHrs)).padStart(2,'0') + ':00';
+        // Store per-date time override
+        if (!tb.daySchedules) tb.daySchedules = {};
+        tb.daySchedules[date] = {start: newStart, end: newEnd, start2: tb.start2, end2: tb.end2};
+        saveTimeBlocks();
+        // Also toggle ON for this date so getTBForHour renders it
+        const stateKey = 'magda_tb_state_' + date;
+        const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+        state[tb.id] = true;
+        localStorage.setItem(stateKey, JSON.stringify(state));
+        renderTBChips();
+        renderView();
+        showToast(tb.icon + ' ' + tb.label + ' → ' + formatHour(parseInt(hour)));
+      }
+      return;
+    }
+
+    if (draggedTask) {
+      const idx = tasks.findIndex(t => t.id === draggedTask.id);
+      if (idx > -1) {
+        const newTime = String(hour).padStart(2,'0') + ':00';
+        tasks[idx].date = date;
+        tasks[idx].time = newTime;
+        saveTasks();
+        renderView();
+      }
+    } else {
+      const pid = e.dataTransfer.getData('palette-id');
+      if (pid) {
+        const allPalette = [...DEFAULT_PALETTE, ...customPalette];
+        const p = allPalette.find(x => x.id === pid);
+        if (p) {
+          const newTime = String(hour).padStart(2,'0') + ':00';
+          addTask({name:p.name, type:p.type, date, time:newTime, duration:p.duration, notes:'', icon:p.icon});
+        }
+      }
+    }
+  });
+
+  if (pasteMode) {
+    el.style.cursor = 'copy';
+    el.addEventListener('click', e => {
+      if (!pasteMode || !copiedTask) return;
+      const hour = el.dataset.hour;
+      const date = el.dataset.date;
+      const newTime = `${String(hour||'09').padStart(2,'0')}:00`;
+      addTask({...copiedTask, id:undefined, date, time:newTime});
+      showToast('📋 Task pasted!');
+      renderView();
+    });
+  }
+}
+
+function updateCurrentTimeLine() {
+  document.querySelectorAll('.current-time-line').forEach(el => el.remove());
+  if (currentView !== 'daily') return;
+  const now = new Date();
+  if (toDateKey(currentDate) !== toDateKey(now)) return;
+  const h = now.getHours();
+  const m = now.getMinutes();
+  if (h < 5 || h > 23) return;
+  const slots = document.querySelectorAll('.time-slot');
+  for (const slot of slots) {
+    if (parseInt(slot.dataset.hour) === h) {
+      const line = document.createElement('div');
+      line.className = 'current-time-line';
+      line.style.top = `${(m/60)*slot.offsetHeight}px`;
+      slot.style.position = 'relative';
+      slot.appendChild(line);
+      break;
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+//  WEEKLY RENDER
+// ═══════════════════════════════════════
+function renderWeekly() {
+  const startOfWeek = getWeekStart(currentDate);
+  const days = Array.from({length:7}, (_,i) => {
+    const d = new Date(startOfWeek);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+  const todayKey = toDateKey(new Date());
+
+  // Week weather bar
+  if (weekWeatherData.length > 0) {
+    const ww = document.getElementById('week-weather');
+    ww.innerHTML = '';
+    weekWeatherData.slice(0,7).forEach(d => {
+      const {icon} = wmoToIcon(d.code);
+      const div = document.createElement('div');
+      div.className = 'week-weather-day';
+      const date = new Date(d.date+'T12:00:00');
+      div.innerHTML = `
+        <div class="wwd-name">${date.toLocaleDateString('en-US',{weekday:'short'})}</div>
+        <div class="wwd-icon">${icon}</div>
+        <div class="wwd-temp">${d.high}°</div>
+        <div class="wwd-lo">${d.low}°</div>
+      `;
+      ww.appendChild(div);
+    });
+  }
+
+  const header = document.getElementById('week-header');
+  header.innerHTML = '<div class="week-day-header"></div>';
+  days.forEach(d => {
+    const dateKey = toDateKey(d);
+    const wDay = weekWeatherData.find(w => w.date === dateKey);
+    const {icon} = wDay ? wmoToIcon(wDay.code) : {icon:'—'};
+    const div = document.createElement('div');
+    div.className = `week-day-header${dateKey === todayKey ? ' today' : ''}`;
+    const isSab = d.getDay() === 6 || d.getDay() === 5;
+    div.innerHTML = `
+      ${d.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase()}
+      <span class="day-num">${d.getDate()}</span>
+      <div class="day-weather">${icon} ${wDay ? `${wDay.high}°/${wDay.low}°` : ''}</div>
+      ${isSab ? '<div style="font-size:0.55rem;color:var(--gold)">🕊️</div>' : ''}
+    `;
+    header.appendChild(div);
+  });
+
+  const body = document.getElementById('week-body');
+  body.innerHTML = '';
+  HOURS.forEach(h => {
+    const row = document.createElement('div');
+    row.className = 'week-time-row';
+    const tlabel = document.createElement('div');
+    tlabel.className = 'week-time-label';
+    tlabel.textContent = formatHour(h);
+    row.appendChild(tlabel);
+
+    days.forEach(d => {
+      const dateKey = toDateKey(d);
+      const cell = document.createElement('div');
+      cell.className = 'week-time-cell';
+      cell.dataset.hour = h;
+      cell.dataset.date = dateKey;
+
+      // TB backgrounds
+      const tbs = getTBForHour(h, d);
+      if (tbs.length > 0) {
+        const bg = document.createElement('div');
+        bg.className = 'week-tb-bg';
+        bg.style.background = tbs[0].color;
+        cell.appendChild(bg);
+      }
+
+      if (isSabbathHour(d, h)) {
+        cell.style.background = 'rgba(201,168,76,0.05)';
+      }
+
+      const dayTasks = tasks.filter(t => t.date === dateKey && t.time && parseInt(t.time.split(':')[0]) === h);
+      dayTasks.forEach(t => {
+        const tb = document.createElement('div');
+        tb.className = `week-task ${t.type || 'custom'}`;
+        tb.draggable = true;
+        tb.dataset.id = t.id;
+        tb.innerHTML = `<span>${t.icon || TASK_TYPES[t.type]?.icon || '📋'}</span><span>${t.name}</span>`;
+        tb.addEventListener('dragstart', () => { draggedTask = t; });
+        tb.addEventListener('dragend', () => { draggedTask = null; });
+        tb.addEventListener('dblclick', () => openEditModal(t.id));
+        cell.appendChild(tb);
+      });
+
+      setupDropZone(cell);
+      row.appendChild(cell);
+    });
+    body.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════
+//  MONTHLY RENDER
+// ═══════════════════════════════════════
+function renderMonthly() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayKey = toDateKey(new Date());
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+
+  const prevDays = new Date(year, month, 0).getDate();
+  for (let i = firstDay-1; i >= 0; i--) {
+    const d = new Date(year, month-1, prevDays-i);
+    const cell = document.createElement('div');
+    cell.className = 'month-cell other-month';
+    cell.appendChild(makeCellDate(prevDays-i, d, false));
+    grid.appendChild(cell);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(year, month, day);
+    const dateKey = toDateKey(d);
+    const cell = document.createElement('div');
+    const isSab = d.getDay() === 6;
+    cell.className = `month-cell${dateKey === todayKey ? ' today' : ''}${isSab ? ' sabbath-day' : ''}`;
+    cell.dataset.date = dateKey;
+    cell.appendChild(makeCellDate(day, d, true));
+
+    if (isSab) {
+      const bar = document.createElement('div');
+      bar.className = 'month-sabbath-bar';
+      bar.textContent = '🕊️ Shabbat';
+      cell.appendChild(bar);
+    }
+
+    // Bills: show from 7 days before due date through due date, pinned to top
+    const dayBills = bills.filter(b => {
+      if (!b.date) return false;
+      const due = new Date(b.date + 'T12:00:00');
+      const cellDay = new Date(dateKey + 'T12:00:00');
+      const daysUntil = Math.round((due - cellDay) / 86400000);
+      return daysUntil >= 0 && daysUntil <= 7;
+    });
+    dayBills.forEach(b => {
+      const due = new Date(b.date + 'T12:00:00');
+      const cellDay = new Date(dateKey + 'T12:00:00');
+      const daysUntil = Math.round((due - cellDay) / 86400000);
+      const dot = document.createElement('div');
+      dot.className = 'month-bill-dot';
+      const urgency = daysUntil === 0 ? '🔴' : daysUntil <= 2 ? '🟠' : '💳';
+      const label = daysUntil === 0 ? 'DUE TODAY' : daysUntil === 1 ? 'Due tomorrow' : `Due in ${daysUntil}d`;
+      dot.textContent = `${urgency} ${b.name}${b.amount ? ' $'+b.amount : ''} — ${label}`;
+      dot.onclick = () => openEditBillModal(b.id);
+      cell.insertBefore(dot, cell.children[1] || null); // pin after date number
+    });
+
+    const dayTasks = tasks.filter(t => t.date === dateKey);
+    dayTasks.slice(0,3).forEach(t => {
+      const dot = document.createElement('div');
+      dot.className = `month-task-dot ${t.type || 'custom'}`;
+      dot.textContent = `${t.icon || TASK_TYPES[t.type]?.icon || '📋'} ${t.name}`;
+      dot.onclick = () => openEditModal(t.id);
+      cell.appendChild(dot);
+    });
+    if (dayTasks.length > 3) {
+      const more = document.createElement('div');
+      more.className = 'month-more';
+      more.textContent = `+${dayTasks.length-3} more`;
+      more.onclick = () => { currentDate = d; switchView('daily'); };
+      cell.appendChild(more);
+    }
+
+    cell.addEventListener('dblclick', () => { currentDate = d; openAddModal(dateKey); });
+    setupDropZone(cell);
+    grid.appendChild(cell);
+  }
+
+  const total = firstDay + daysInMonth;
+  const remaining = total % 7 === 0 ? 0 : 7 - (total%7);
+  for (let i = 1; i <= remaining; i++) {
+    const d = new Date(year, month+1, i);
+    const cell = document.createElement('div');
+    cell.className = 'month-cell other-month';
+    cell.appendChild(makeCellDate(i, d, false));
+    grid.appendChild(cell);
+  }
+}
+
+function makeCellDate(num, d, active) {
+  const div = document.createElement('div');
+  div.className = 'cell-date';
+  div.textContent = num;
+  if (active) {
+    div.style.cursor = 'pointer';
+    div.onclick = e => { e.stopPropagation(); currentDate = new Date(d); switchView('daily'); };
+  }
+  return div;
+}
+
+// ═══════════════════════════════════════
+//  PALETTE
+// ═══════════════════════════════════════
+function renderPalette() {
+  const grid = document.getElementById('task-palette');
+  grid.innerHTML = '';
+  const allPalette = [...DEFAULT_PALETTE, ...customPalette];
+  allPalette.forEach(p => {
+    const item = document.createElement('div');
+    item.className = `palette-item ${p.type || 'custom'}`;
+    item.draggable = true;
+    item.innerHTML = `<span>${p.icon || '⭐'}</span><span style="flex:1">${p.name}</span>${p.duration ? `<span class="copy-badge">${p.duration}m</span>` : ''}`;
+    item.addEventListener('dragstart', e => {
+      draggedTask = null;
+      e.dataTransfer.setData('palette-id', p.id);
+      e.dataTransfer.effectAllowed = 'copy';
+    });
+    item.addEventListener('click', () => openAddModalPrefilled(p, toDateKey(currentDate)));
+    item.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (customPalette.find(cp => cp.id === p.id)) {
+        if (confirm(`Delete custom task "${p.name}"?`)) {
+          customPalette = customPalette.filter(cp => cp.id !== p.id);
+          localStorage.setItem('magda_custom_palette', JSON.stringify(customPalette));
+          renderPalette();
+        }
+      }
+    });
+    grid.appendChild(item);
+  });
+}
+
+// ═══════════════════════════════════════
+//  NON-NEGS
+// ═══════════════════════════════════════
+function renderNonNegs() {
+  const list = document.getElementById('non-neg-list');
+  list.innerHTML = '';
+  const today = toDateKey(new Date());
+  const key = `magda_nonneg_${today}`;
+  const checked = JSON.parse(localStorage.getItem(key) || '{}');
+  NON_NEGS.forEach(n => {
+    const row = document.createElement('label');
+    row.className = 'non-neg-row';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = checked[n.id] || false;
+    cb.onchange = () => {
+      const c = JSON.parse(localStorage.getItem(key) || '{}');
+      c[n.id] = cb.checked;
+      localStorage.setItem(key, JSON.stringify(c));
+    };
+    row.appendChild(cb);
+    row.appendChild(document.createTextNode(`${n.icon} ${n.label}`));
+    list.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════
+//  BILLS
+// ═══════════════════════════════════════
+function openBillModal() {
+  document.getElementById('bill-name-input').value = '';
+  document.getElementById('bill-amt-input').value = '';
+  document.getElementById('bill-date-input').value = toDateKey(new Date());
+  document.getElementById('bill-repeat-input').value = 'none';
+  document.getElementById('bill-modal-overlay').classList.add('open');
+}
+
+function openEditBillModal(id) {
+  const bill = bills.find(b => b.id === id);
+  if (!bill) return;
+  document.getElementById('bill-name-input').value = bill.name;
+  document.getElementById('bill-amt-input').value = bill.amount || '';
+  document.getElementById('bill-date-input').value = bill.date;
+  document.getElementById('bill-repeat-input').value = bill.repeat || 'none';
+  document.getElementById('bill-modal-overlay').classList.add('open');
+}
+
+async function saveBill() {
+  const name = document.getElementById('bill-name-input').value.trim();
+  const amount = document.getElementById('bill-amt-input').value;
+  const date = document.getElementById('bill-date-input').value;
+  const repeat = document.getElementById('bill-repeat-input').value;
+  if (!name || !date) { alert('Name and date required!'); return; }
+  const bill = {id: Date.now().toString(), name, amount: parseFloat(amount)||0, date, repeat};
+  bills.push(bill);
+  // Add recurring bills
+  if (repeat === 'monthly') {
+    for (let i = 1; i <= 12; i++) {
+      const d = new Date(date);
+      d.setMonth(d.getMonth() + i);
+      bills.push({...bill, id: Date.now().toString()+i, date: toDateKey(d)});
+    }
+  }
+  localStorage.setItem('magda_bills', JSON.stringify(bills));
+  // Sync new bill to Supabase
+  try {
+    const b = bills[bills.length - 1];
+    await sb.upsert('bills', {id: b.id, user_id: USER_ID, name: b.name, amount: b.amount || 0, date: b.date, repeat: b.repeat || 'none'});
+  } catch(e) { console.warn('Supabase bill save failed:', e.message); }
+  closeModal('bill-modal-overlay');
+  renderBillsList();
+  renderBillsWarning();
+  renderView();
+  showToast('💳 Bill added!');
+}
+
+function renderBillsWarning() {
+  const banner = document.getElementById('bills-warning-banner');
+  if (!banner) return;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const paidKey = 'magda_bills_paid_' + toDateKey(new Date());
+  const paid = JSON.parse(localStorage.getItem(paidKey) || '{}');
+
+  const upcoming = bills.filter(b => {
+    if (!b.date) return false;
+    const due = new Date(b.date + 'T00:00:00');
+    const daysUntil = Math.round((due - today) / 86400000);
+    return daysUntil >= 0 && daysUntil <= 7;
+  }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  if (upcoming.length === 0) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  banner.style.display = 'block';
+  banner.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'bill-warning-wrap';
+
+  const header = document.createElement('div');
+  header.className = 'bill-warning-header';
+  header.innerHTML = '💳 Upcoming Bills — ' + upcoming.length + ' due this week';
+  wrap.appendChild(header);
+
+  const list = document.createElement('div');
+  list.className = 'bill-warning-list';
+
+  upcoming.forEach(b => {
+    const due = new Date(b.date + 'T00:00:00');
+    const daysUntil = Math.round((due - today) / 86400000);
+    const isPaid = paid[b.id] === true;
+
+    const urgencyIcon = daysUntil === 0 ? '🔴' : daysUntil === 1 ? '🟠' : daysUntil <= 3 ? '🟡' : '💜';
+    const countdownText = daysUntil === 0 ? 'DUE TODAY!' : daysUntil === 1 ? 'Due tomorrow' : 'Due in ' + daysUntil + ' days';
+    const countdownClass = daysUntil === 0 ? 'urgent' : daysUntil <= 2 ? 'soon' : 'okay';
+
+    const item = document.createElement('div');
+    item.className = 'bill-warning-item' + (isPaid ? ' paid' : '');
+
+    const urgEl = document.createElement('span');
+    urgEl.className = 'bill-warn-urgency';
+    urgEl.textContent = isPaid ? '✅' : urgencyIcon;
+
+    const info = document.createElement('div');
+    info.className = 'bill-warn-info';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'bill-warn-name';
+    nameEl.textContent = b.name;
+    const cdEl = document.createElement('div');
+    cdEl.className = 'bill-warn-countdown ' + countdownClass;
+    cdEl.textContent = isPaid ? 'Marked as paid ✓' : countdownText;
+    info.appendChild(nameEl);
+    info.appendChild(cdEl);
+
+    const amt = document.createElement('div');
+    amt.className = 'bill-warn-amt';
+    amt.textContent = b.amount ? '$' + parseFloat(b.amount).toFixed(2) : '';
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'bill-warn-cb';
+    cb.checked = isPaid;
+    cb.title = isPaid ? 'Mark as unpaid' : 'Mark as paid';
+    cb.onchange = () => {
+      const p = JSON.parse(localStorage.getItem(paidKey) || '{}');
+      p[b.id] = cb.checked;
+      localStorage.setItem(paidKey, JSON.stringify(p));
+      renderBillsWarning();
+      renderBillsList();
+    };
+
+    item.appendChild(urgEl);
+    item.appendChild(info);
+    item.appendChild(amt);
+    item.appendChild(cb);
+    list.appendChild(item);
+  });
+
+  wrap.appendChild(list);
+  banner.appendChild(wrap);
+}
+
+function renderBillsList() {
+  const list = document.getElementById('bills-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const today = new Date();
+  const sevenDaysLater = new Date(today.getTime() + 7*86400000);
+  const upcoming = bills
+    .filter(b => {
+      if (!b.date) return false;
+      const due = new Date(b.date + 'T12:00:00');
+      return due >= today;
+    })
+    .sort((a,b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 8);
+
+  if (upcoming.length === 0) {
+    list.innerHTML = '<div style="font-size:0.76rem;color:var(--taupe);text-align:center;padding:10px">No upcoming bills 🎉</div>';
+    return;
+  }
+
+  upcoming.forEach(b => {
+    const dueDate = new Date(b.date);
+    const daysUntil = Math.ceil((dueDate - today) / 86400000);
+    const div = document.createElement('div');
+    div.className = 'bill-item';
+    const urgentClass = daysUntil <= 3 ? 'bill-overdue' : daysUntil <= 7 ? 'bill-soon' : '';
+    div.innerHTML = `
+      <div>
+        <div style="font-weight:600;font-size:0.76rem">${b.name}</div>
+        <div class="bill-due ${urgentClass}">${daysUntil === 0 ? 'Due TODAY!' : daysUntil === 1 ? 'Due tomorrow' : `Due in ${daysUntil} days`}</div>
+      </div>
+      <div class="bill-amt ${urgentClass}">$${b.amount ? b.amount.toFixed(2) : '—'}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════
+//  MODALS — TASKS
+// ═══════════════════════════════════════
+function openAddModal(prefillDate) {
+  editingTaskId = null;
+  document.getElementById('modal-title').textContent = 'New Task ✦';
+  document.getElementById('task-name-input').value = '';
+  document.getElementById('task-date-input').value = prefillDate || toDateKey(currentDate);
+  document.getElementById('task-time-input').value = '09:00';
+  document.getElementById('task-dur-input').value = 60;
+  document.getElementById('task-repeat-input').value = 'none';
+  document.getElementById('task-notes-input').value = '';
+  document.getElementById('save-task-btn').textContent = 'Add Task';
+  setTypeChip('work');
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('task-name-input').focus(), 100);
+}
+
+function openAddModalPrefilled(p, dateKey) {
+  openAddModal(dateKey);
+  document.getElementById('task-name-input').value = p.name;
+  document.getElementById('task-dur-input').value = p.duration;
+  setTypeChip(p.type || 'custom');
+}
+
+function openEditModal(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  editingTaskId = id;
+  document.getElementById('modal-title').textContent = 'Edit Task ✏️';
+  document.getElementById('task-name-input').value = task.name;
+  document.getElementById('task-date-input').value = task.date || toDateKey(currentDate);
+  document.getElementById('task-time-input').value = task.time || '09:00';
+  document.getElementById('task-dur-input').value = task.duration || 60;
+  document.getElementById('task-repeat-input').value = task.repeat || 'none';
+  document.getElementById('task-notes-input').value = task.notes || '';
+  document.getElementById('save-task-btn').textContent = 'Update Task';
+  setTypeChip(task.type || 'work');
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function setTypeChip(type) {
+  selectedType = type;
+  document.querySelectorAll('#modal-overlay .type-chip').forEach(c => c.classList.toggle('selected', c.dataset.type === type));
+}
+
+document.querySelectorAll('#modal-overlay .type-chip').forEach(c => {
+  c.addEventListener('click', () => setTypeChip(c.dataset.type));
+});
+
+document.querySelectorAll('#custom-task-modal .type-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    selectedCTType = c.dataset.type;
+    document.querySelectorAll('#custom-task-modal .type-chip').forEach(x => x.classList.toggle('selected', x.dataset.type === selectedCTType));
+  });
+});
+
+function saveTask() {
+  const name = document.getElementById('task-name-input').value.trim();
+  if (!name) { showToast('❌ Give that task a name!', '#E53935'); return; }
+  const taskData = {
+    name,
+    date: document.getElementById('task-date-input').value,
+    time: document.getElementById('task-time-input').value,
+    duration: parseInt(document.getElementById('task-dur-input').value) || 60,
+    repeat: document.getElementById('task-repeat-input').value,
+    notes: document.getElementById('task-notes-input').value,
+    type: selectedType,
+  };
+  if (editingTaskId) {
+    const idx = tasks.findIndex(t => t.id === editingTaskId);
+    if (idx > -1) tasks[idx] = {...tasks[idx], ...taskData};
+    showToast('✦ Task updated!');
+  } else {
+    addTask(taskData);
+    showToast('✅ Task added!');
+  }
+  closeModal('modal-overlay');
+  renderView();
+}
+
+function addTask(data) {
+  const task = {id: Date.now().toString()+Math.random(), ...data};
+  tasks.push(task);
+  if (data.repeat && data.repeat !== 'none') {
+    const base = new Date(data.date);
+    for (let i = 1; i <= 60; i++) {
+      const d = new Date(base);
+      if (data.repeat === 'daily') d.setDate(d.getDate()+i);
+      else if (data.repeat === 'weekly') { if (i%7!==0) continue; d.setDate(d.getDate()+i); }
+      else if (data.repeat === 'weekdays') {
+        d.setDate(d.getDate()+i);
+        if (d.getDay()===0||d.getDay()===6) continue;
+      }
+      tasks.push({...data, id:Date.now().toString()+Math.random(), date:toDateKey(d)});
+    }
+  }
+  saveTasks();
+}
+
+async function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  localStorage.setItem('magda_tasks_v2', JSON.stringify(tasks));
+  renderView();
+  showToast('🗑 Task deleted.');
+  try { await sb.del('tasks', id); } catch(e) { console.warn('Supabase deleteTask failed:', e.message); }
+}
+
+async function saveTasks() {
+  // Always keep localStorage as instant fallback
+  localStorage.setItem('magda_tasks_v2', JSON.stringify(tasks));
+  // Sync to Supabase in background
+  try {
+    const rows = tasks.map(t => ({
+      id: String(t.id),
+      user_id: USER_ID,
+      name: t.name || 'Untitled',
+      type: t.type || 'custom',
+      date: t.date || null,
+      time: t.time || null,
+      duration: parseInt(t.duration) || 60,
+      repeat: t.repeat || 'none',
+      notes: t.notes || '',
+      icon: t.icon || null,
+    }));
+    if (rows.length > 0) await sb.upsert('tasks', rows);
+  } catch(e) { console.warn('Supabase saveTasks failed:', e.message); }
+}
+
+// ═══════════════════════════════════════
+//  COPY / PASTE
+// ═══════════════════════════════════════
+function copyTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  copiedTask = {...task};
+  pasteMode = true;
+  document.getElementById('paste-btn').style.display = 'flex';
+  showToast('📋 Task copied! Click a time slot to paste.');
+  document.body.style.cursor = 'copy';
+  renderView();
+}
+
+function activatePasteMode() {
+  if (!copiedTask) return;
+  pasteMode = true;
+  showToast('📋 Click any time slot to paste: ' + copiedTask.name);
+}
+
+function deactivatePasteMode() {
+  pasteMode = false;
+  copiedTask = null;
+  document.body.style.cursor = '';
+  document.getElementById('paste-btn').style.display = 'none';
+}
+
+// ═══════════════════════════════════════
+//  CUSTOM TASK CREATOR
+// ═══════════════════════════════════════
+function openCustomTaskModal() {
+  document.getElementById('ct-name').value = '';
+  document.getElementById('ct-icon').value = '⭐';
+  document.getElementById('ct-dur').value = 60;
+  selectedCTType = 'custom';
+  document.querySelectorAll('#custom-task-modal .type-chip').forEach(c => c.classList.toggle('selected', c.dataset.type === 'custom'));
+  document.getElementById('custom-task-modal').classList.add('open');
+}
+
+function saveCustomTask() {
+  const name = document.getElementById('ct-name').value.trim();
+  if (!name) { showToast('❌ Name required!', '#E53935'); return; }
+  const p = {
+    id: 'custom_'+Date.now(),
+    name,
+    icon: document.getElementById('ct-icon').value || '⭐',
+    duration: parseInt(document.getElementById('ct-dur').value) || 60,
+    type: selectedCTType,
+  };
+  customPalette.push(p);
+  localStorage.setItem('magda_custom_palette', JSON.stringify(customPalette));
+  closeModal('custom-task-modal');
+  renderPalette();
+  showToast('⭐ Custom task created!');
+}
+
+// ═══════════════════════════════════════
+//  CONTEXT MENU
+// ═══════════════════════════════════════
+function showCtxMenu(x, y, taskId) {
+  ctxTargetId = taskId;
+  const menu = document.getElementById('ctx-menu');
+  menu.style.left = `${Math.min(x, window.innerWidth-180)}px`;
+  menu.style.top = `${Math.min(y, window.innerHeight-160)}px`;
+  menu.style.display = 'block';
+}
+function hideCtxMenu() { document.getElementById('ctx-menu').style.display = 'none'; }
+function ctxEdit() { hideCtxMenu(); openEditModal(ctxTargetId); }
+function ctxCopy() { hideCtxMenu(); copyTask(ctxTargetId); }
+function ctxDelete() { hideCtxMenu(); deleteTask(ctxTargetId); }
+
+// ═══════════════════════════════════════
+//  ICS EXPORT (ALL tasks for current view)
+// ═══════════════════════════════════════
+function buildExportTasks() {
+  let exportTasks = [];
+  if (currentView === 'daily') {
+    exportTasks = tasks.filter(t => t.date === toDateKey(currentDate));
+  } else if (currentView === 'weekly') {
+    const start = getWeekStart(currentDate);
+    const end = new Date(start); end.setDate(end.getDate()+6);
+    exportTasks = tasks.filter(t => {
+      if (!t.date) return false;
+      const d = new Date(t.date + 'T00:00:00');
+      return d >= start && d <= end;
+    });
+  } else {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    exportTasks = tasks.filter(t => {
+      if (!t.date) return false;
+      const d = new Date(t.date + 'T00:00:00');
+      return d.getFullYear() === year && d.getMonth() === month;
+    });
+  }
+  // Add bills due in this period
+  exportTasks = exportTasks.concat(bills
+    .filter(b => {
+      if (!b.date) return false;
+      if (currentView === 'daily') return b.date === toDateKey(currentDate);
+      return true;
+    })
+    .map(b => ({name: '💳 ' + b.name + ' Due', date: b.date, time: '09:00', duration: 30, notes: 'Amount: $' + (b.amount || 0), type: 'bill'}))
+  );
+  return exportTasks.sort((a,b) => (a.time||'00:00').localeCompare(b.time||'00:00'));
+}
+
+function openExportModal() {
+  const exportTasks = buildExportTasks();
+  const viewLabel = currentView === 'daily'
+    ? currentDate.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'})
+    : currentView === 'weekly' ? 'This Week' : currentDate.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+
+  document.getElementById('export-modal-title').textContent = '📅 ' + viewLabel + ' Agenda';
+
+  const preview = document.getElementById('export-preview');
+  preview.innerHTML = '';
+
+  if (exportTasks.length === 0) {
+    preview.innerHTML = '<div class="export-empty">No tasks to export for this period.</div>';
+    document.getElementById('download-ics-btn').disabled = true;
+    document.getElementById('download-ics-btn').style.opacity = '0.5';
+  } else {
+    document.getElementById('download-ics-btn').disabled = false;
+    document.getElementById('download-ics-btn').style.opacity = '1';
+
+    // Group by date if weekly/monthly
+    const grouped = {};
+    exportTasks.forEach(t => {
+      const key = t.date || 'Unknown';
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(t);
+    });
+
+    const sortedDates = Object.keys(grouped).sort();
+    sortedDates.forEach(dateKey => {
+      const section = document.createElement('div');
+      section.className = 'export-section';
+      if (currentView !== 'daily') {
+        const titleEl = document.createElement('div');
+        titleEl.className = 'export-section-title';
+        const d = new Date(dateKey + 'T12:00:00');
+        titleEl.textContent = d.toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+        section.appendChild(titleEl);
+      }
+      grouped[dateKey].forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'export-item';
+        const typeInfo = TASK_TYPES[t.type] || {icon:'📋'};
+        item.innerHTML =
+          '<span style="font-size:1rem">' + (t.icon || typeInfo.icon) + '</span>' +
+          '<span class="export-item-time">' + (t.time ? formatHour(parseInt(t.time.split(':')[0])) : '—') + '</span>' +
+          '<span class="export-item-name">' + t.name + '</span>' +
+          '<span class="export-item-dur">' + (t.duration ? t.duration + 'min' : '') + '</span>';
+        section.appendChild(item);
+      });
+      preview.appendChild(section);
+    });
+
+    const countEl = document.createElement('div');
+    countEl.className = 'export-count';
+    countEl.textContent = exportTasks.length + ' event' + (exportTasks.length !== 1 ? 's' : '') + ' will be exported';
+    preview.appendChild(countEl);
+  }
+
+  document.getElementById('export-modal-overlay').classList.add('open');
+}
+
+function downloadICS() {
+  const exportTasks = buildExportTasks();
+  if (exportTasks.length === 0) { showToast('No tasks to export!', '#FF9800'); return; }
+
+  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Magda Command Center//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+
+  exportTasks.forEach(t => {
+    if (!t.date) return;
+    const startDt = new Date(t.date + 'T' + (t.time || '09:00') + ':00');
+    const endDt = new Date(startDt.getTime() + (t.duration || 60)*60000);
+    const fmt = d => d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+    const safeText = s => (s||'').replace(/[\n\r]/g,' ').replace(/,/g,'\,').replace(/;/g,'\;');
+    ics += 'BEGIN:VEVENT\r\n';
+    ics += 'DTSTART:' + fmt(startDt) + '\r\n';
+    ics += 'DTEND:' + fmt(endDt) + '\r\n';
+    ics += 'SUMMARY:[RumaNurse] ' + safeText(t.name) + '\r\n';
+    ics += 'DESCRIPTION:' + safeText(t.notes || ('Type: ' + t.type)) + '\r\n';
+    ics += 'END:VEVENT\r\n';
+  });
+  ics += 'END:VCALENDAR';
+
+  const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const viewLabel = currentView === 'daily' ? toDateKey(currentDate) : currentView;
+  a.download = 'magda-agenda-' + viewLabel + '.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('⬇️ Downloaded! Now drag it into Google Calendar.');
+}
+
+function exportICS() { openExportModal(); }
+
+// ═══════════════════════════════════════
+//  KEYBOARD
+// ═══════════════════════════════════════
+function handleKeydown(e) {
+  if (e.target.matches('input,textarea,select')) return;
+  if (e.key === 'Escape') {
+    ['modal-overlay','bill-modal-overlay','tb-modal-overlay','custom-task-modal'].forEach(id => closeModal(id));
+    deactivatePasteMode();
+  }
+  if (e.key === 'n') openAddModal();
+  if (e.key === 'v' && copiedTask) activatePasteMode();
+}
+
+// ═══════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════
+function toDateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function formatHour(h) {
+  if (h===0) return '12 AM';
+  if (h<12) return `${h} AM`;
+  if (h===12) return '12 PM';
+  return `${h-12} PM`;
+}
+function getWeekStart(d) {
+  const date = new Date(d);
+  date.setDate(date.getDate()-date.getDay());
+  return date;
+}
+function showToast(msg, bg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  if (bg) toast.style.background = bg;
+  else toast.style.background = 'var(--navy)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Close modals on overlay click
+['modal-overlay','bill-modal-overlay','tb-modal-overlay','custom-task-modal','export-modal-overlay'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target.id === id) closeModal(id);
+  });
+});
+
+// ═══════════════════════════════════════
+//  SEED
+// ═══════════════════════════════════════
+function seedDefaultTasks() {
+  if (tasks.length > 0) return;
+  if (localStorage.getItem('magda_seeded_v2')) return;
+  const today = toDateKey(new Date());
+  const seeds = [
+    {name:'Morning Devotional 📖',type:'self',date:today,time:'06:00',duration:30,notes:'Philippians 4:13',repeat:'daily'},
+    {name:'GYM — Back to it! 💪🏽',type:'gym',date:today,time:'07:30',duration:90,notes:'Upper body — week 1 restart',repeat:'none'},
+    {name:'High-Protein Breakfast',type:'meal',date:today,time:'09:30',duration:30,notes:'Target: 40g protein',repeat:'daily'},
+    {name:'RumaNurse — Lyka Follow Up',type:'work',date:today,time:'10:30',duration:60,notes:'CalPacific lead',repeat:'none'},
+    {name:'Feed Luna 🐾',type:'health',date:today,time:'12:00',duration:10,notes:'',repeat:'daily'},
+    {name:'Lunch — Protein Meal',type:'meal',date:today,time:'13:00',duration:30,notes:'Target: 45g protein',repeat:'daily'},
+    {name:'RumaNurse Admin',type:'work',date:today,time:'14:00',duration:90,notes:'LinkedIn + pipeline',repeat:'weekdays'},
+    {name:'Sibling Pickup 🚗',type:'sibling',date:today,time:'16:00',duration:30,notes:'',repeat:'weekdays'},
+    {name:'Dinner Prep',type:'meal',date:today,time:'18:00',duration:45,notes:'Target: 40g protein',repeat:'daily'},
+    {name:'Evening Skincare ✨',type:'self',date:today,time:'20:00',duration:20,notes:'',repeat:'daily'},
+    {name:'Wind Down',type:'self',date:today,time:'22:00',duration:30,notes:'7hr sleep target',repeat:'daily'},
+  ];
+  seeds.forEach(s => tasks.push({id:Date.now().toString()+Math.random(), ...s}));
+  saveTasks();
+  localStorage.setItem('magda_seeded_v2','1');
+}
+
+init().catch(e => { console.warn("Init error:", e); });
+</script>
+</body>
+</html>
